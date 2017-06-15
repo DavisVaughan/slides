@@ -15,6 +15,8 @@ output:
 options(htmltools.dir.version = FALSE)
 ```
 
+# Who am I?
+
 ???
 
 - Thank you all for being here today
@@ -26,10 +28,6 @@ options(htmltools.dir.version = FALSE)
 - timekit provides some helper functions for time series analysis
 
 - Probably the most important thing on this slide, I've spent alot of time trying to master the syntax of R, and finding resources to help me along the way. In my experience, you will run into things you don't understand, and for awhile you'll look like a deer caught in headlights, but one of the best things about R is the active community asking questions all across the internet, so your question has likely already been answered, and is probably just a google search away.
-
---
-
-# Who am I?
 
 --
 
@@ -66,6 +64,8 @@ options(htmltools.dir.version = FALSE)
 
 ---
 
+# Why am I here?
+
 ???
 
 - Bells: Show off some visualizations, something called shiny, and teach you a bit about collaboration with R
@@ -77,10 +77,6 @@ options(htmltools.dir.version = FALSE)
 - Resources to learn R
 
 - Importantly, NOT here to teach a programming class
-
---
-
-# Why am I here?
 
 --
 
@@ -114,6 +110,8 @@ __I'm not here to teach a programming class!__
 
 ---
 
+# What the heck is R?
+
 ???
 
 - If you're sitting there, asking yourself this question, that's fine. Let's give you a little bit of background. 
@@ -121,10 +119,6 @@ __I'm not here to teach a programming class!__
 - So what is R? 
 
 - Talk about airbnb pic
-
---
-
-# What the heck is R?
 
 --
 
@@ -163,6 +157,8 @@ _Some background:_
   
 ---
 
+# What can I use R for?
+
 ???
 
 - It can function like a programmatic pivot table from excel, but in reality it can do so much more.
@@ -173,10 +169,6 @@ _Some background:_
   - Its a cycle, the 3 steps are not something you get right the first time around.
   
 - What you see underneath these headings are packages, that word I mentioned earlier that I said you wouldnt understand. I'll get to them later, but just know that there are dedicated resources in R designed to help with each one of these steps.
-
---
-
-# What can I use R for?
 
 --
 
@@ -204,29 +196,18 @@ _Some background:_
 
 ---
 
+class: center, middle
+
+# Anything else?
+
 ???
 
 - So it sounds like R can be a tool in my data analysis toolbox. Maybe it could be something to use instead of Excel. But is that all it does? Is there anything else?
 
 - Absolutely! Lets look at some examples.
 
---
-
-class: center, middle
-
-# Anything else?
 
 ---
-
-???
-
-- One thing R is well known for is its beautiful graphics, so i figured id give you one example of that to start.
-
-- This is a graph of 4 stocks, over the past 10 years. It's created using something called dygraph, and its even interactive.
-
-- SHOW OFF DYGRAPH
-
---
 
 # 1 - Beautiful visualizations
 
@@ -244,15 +225,21 @@ FANG %>%
   dyLegend(width = 600)
 ```
 
+???
+
+- One thing R is well known for is its beautiful graphics, so i figured id give you one example of that to start.
+
+- This is a graph of 4 stocks, over the past 10 years. It's created using something called dygraph, and its even interactive.
+
+- SHOW OFF DYGRAPH
+
 ---
+
+# 1 - Beautiful visualizations
 
 ???
 
 - If youre sitting there thinking, im not a programmer, ill never be able to do that, just look at the amount of code it took me to produce this.
-
---
-
-# 1 - Beautiful visualizations
 
 --
 
@@ -285,6 +272,14 @@ The best part? I can recreate this with new data whenever I feel like, just by s
 
 ---
 
+# 2 - Reporting / Interactive dashboards
+
+![](monte-carlo-retirement.PNG)
+
+.footnote[
+[Mephisto Software](http://www.mephistosoftware.com/shiny/retsim/)
+]
+
 ???
 
 - Another great feature of R is for reporting and dashboards using something like Shiny. 
@@ -297,17 +292,9 @@ The best part? I can recreate this with new data whenever I feel like, just by s
 
 - This reporting aspect of R is a great way for a developer to communicate their model results to upper management in a more earily digestable format.
 
---
-
-# 2 - Reporting / Interactive dashboards
-
-![](monte-carlo-retirement.PNG)
-
-.footnote[
-[Mephisto Software](http://www.mephistosoftware.com/shiny/retsim/)
-]
-
 ---
+
+# 3 - Powerpoints? 
 
 ???
 
@@ -316,10 +303,6 @@ The best part? I can recreate this with new data whenever I feel like, just by s
 - You might be wondering, why would I ever want to do that? I promise, im not insane. There are a few reasons. One is portability. You can host these powerpoints on the web, and interact with them from a browser. In this way, you dont have to worry about the presentation looking different on a different version of powerpoint, or maybe you had it on a Mac running Keynote and need to use a PC. That wouldnt work, so in this case R's presentation feature abstracts away all that.
 
 - Another reason is that code can be shown, and run, right there in the presentation. When I typed this up, i didnt include that output, R did it for me.
-
---
-
-# 3 - Powerpoints? 
 
 --
 
@@ -345,6 +328,8 @@ my_variable
 
 ---
 
+# 4 - Collaboration / Version control
+
 ???
 
 What is github? Github is a programmer's best friend. If youve never heard of it, its a great place to host any code, like R code, and it has a few key functions. 
@@ -358,8 +343,6 @@ What is github? Github is a programmer's best friend. If youve never heard of it
 Alot of people wonder if github is secure enough for their companies' code. Id argue yes, just based on the list of clients that the Github Enterprise software claims to have. I dont think that NASA or Airbnb would use it unless they thought it was secure.
 
 --
-
-# 4 - Collaboration / Version control
 
 - Github - A programmer's best friend.
   
@@ -394,15 +377,13 @@ Alot of people wonder if github is secure enough for their companies' code. Id a
 
 ---
 
+# How can R do so much, and still be free?
+
 ???
 
 At this point, you might be wondering how on earth R can do so much and still be free. The correct answer actually comes from the question. Its because R is open source and free that it can do so much. I think its finally time to talk a little bit about packages.
 
 Agh more jargon, yes what the heck is a package? 
-
---
-
-# How can R do so much, and still be free?
 
 --
 
@@ -448,6 +429,8 @@ Agh more jargon, yes what the heck is a package?
 
 ---
 
+# How is R used out there in the real world?
+
 ???
 
 So, now that you know about packages, I feel comfortable talking about how R is used out there in the real world. I'm going to use airbnb as my case study. They have something called a knowledge repo, which works something like this. Say Bob wants to work on an analysis, maybe he's interested in analyzing the output of some Alfa projections. So he takes the data into R, does his analysis, while providing plenty of comments along the way, and when he's finished, he can submit that analysis to the knowledge repo, where others throughout the company can view it, comment on it, and search for other analyses that they are interested in. This is by far the fastest way to spread information throughout a company, and it forces you to take some time thinking about telling a story with your analyses so that other's can understand what youre doing and why youre doing it. 
@@ -459,8 +442,6 @@ Airbnb set up their own Knowledge Repo, but recently, RStudio has created a paid
 The other piece Id like to talk about is airbnb's internal package, Rbnb. While most developers release their packages for everyone to use, that doesnt mean that they have to. Its becoming more common for companies to develop their own internal packages for company use. In Airbnb's case, their package mainly focuses on the pieces you see here.....
 
 --
-
-# How is R used out there in the real world?
 
 [__Airbnb:__](https://medium.com/airbnb-engineering/using-r-packages-and-education-to-scale-data-science-at-airbnb-906faa58e12d) 
 
@@ -484,13 +465,13 @@ The other piece Id like to talk about is airbnb's internal package, Rbnb. While 
 
 ---
 
+# How have I used R so far at Lincoln?
+
 ???
 
 Right, so right now its a very manual process, so lets see what I came up with.
 
 --
-
-# How have I used R so far at Lincoln?
 
 _Project 1: Interactive reporting using R and Shiny_
 
@@ -546,13 +527,13 @@ _Project 1: Interactive reporting using R and Shiny_
 
 ---
 
+# How have I used R so far at Lincoln?
+
 ???
 
 Its important to note that we couldn't use the IRR function from Excel here. In some cases, the IRR wasn't used to discount for the entire period, but instead a negative discount rate was used if the cumulative discounted cash flow ever fell below 0.
 
 --
-
-# How have I used R so far at Lincoln?
 
 _Project 2: IRR calculations with variable discount rates_
 
@@ -581,6 +562,8 @@ _Project 2: IRR calculations with variable discount rates_
 
 ---
 
+# Project 2 - Solution
+
 ???
 
 So how did I use R to solve this one? Let's walk through it. 
@@ -588,10 +571,6 @@ So how did I use R to solve this one? Let's walk through it.
 Really this is optimizing that formula squared, so that the value is floored at 0, and doesn't go negative right? Since the whole point is to make this difference equal to 0 by changing the IRR.
 
 So what were the results? Drastic, to say the least. We went from a 5-10 minute excel macro, down to a 9 second execution in R. How? A few things, but it mainly boils down to R being vectorized, and having access to a package that lets R run in parallel. For the parallel part, since I have 4 cores on my machine, I was able to distribute the load of this problem equally across the cores, so each core worked on 2400 / 4 optimizations, then returned it back to me at the end.
-
---
-
-# Project 2 - Solution
 
 --
 
@@ -625,18 +604,16 @@ So what were the results? Drastic, to say the least. We went from a 5-10 minute 
 
 ---
 
-???
-
-No joke, my face looked exactly like this the first time it finished.
-
---
-
 ```{r fig.width=30, fig.height=20, echo=FALSE}
 library(jpeg)
 library(grid)
 img <- readJPEG("not-bad.jpg")
 grid.raster(img)
 ```
+
+???
+
+No joke, my face looked exactly like this the first time it finished.
 
 ---
 
