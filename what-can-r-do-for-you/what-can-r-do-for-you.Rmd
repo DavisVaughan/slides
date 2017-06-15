@@ -635,7 +635,7 @@ If you want to learn more:
 
 ---
 
-class: center, middle
+class: inverse, center, middle
 
 # Thank you!
 
