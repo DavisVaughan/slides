@@ -552,7 +552,7 @@ _Project 2: IRR calculations with variable discount rates_
       
       - Cannot use the IRR function in Excel. We want to change to a low discount rate (5%) if cumulative cash flows drop below 0.
       
-      - __Takes 5-10 minutes to run__
+      - __Each product takes 15 minutes to run. 12 products. 3 hours total.__
 
 --
 
