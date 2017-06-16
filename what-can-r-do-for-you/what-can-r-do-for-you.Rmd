@@ -3,6 +3,7 @@ title: "What can R do for _you_?"
 author: "Davis Vaughan"
 output:
   xaringan::moon_reader:
+    css: ["default", "custom.css"]
     chakra: libs/remark-latest.min.js
     lib_dir: libs
     nature:
@@ -14,6 +15,8 @@ output:
 ```{r setup, include=FALSE}
 options(htmltools.dir.version = FALSE)
 ```
+
+class: dv
 
 # Who am I?
 
@@ -33,25 +36,17 @@ options(htmltools.dir.version = FALSE)
 
 - Davis Vaughan
 
---
-
 - Actuarial intern in ALM
-  - Working under Patrick and Wen
-
---
 
 - Master's student at UNC Charlotte
-  - Quantitative Finance
+
+- Previously an intern at DataCamp
 
 --
 
 - R enthusiast
 
---
-
   - 3+ years of R programming
-
---
 
   - Co-author of 2 R packages (Currently this means nothing to you)
       - _tidyquant_ - Making financial analysis easier in R
@@ -60,9 +55,21 @@ options(htmltools.dir.version = FALSE)
   
 --
   
-  - Lot's of time banging my head against the wall
+- Lot's of time banging my head against the wall while battling R
 
 ---
+
+class: dv center middle
+
+# Why am I here?
+
+--
+
+# I just really like R
+
+---
+
+class: dv
 
 # Why am I here?
 
@@ -80,35 +87,43 @@ options(htmltools.dir.version = FALSE)
 
 --
 
-- A high level intro to R
+.pull-left[
 
---
+Part 1
+
+- A high level intro to R
 
 - What is R used for?
 
---
-
 - Bells and whistles
 
+]
+
 --
+
+.pull-right[
+
+Part 2
 
 - What other companies use R for
 
---
-
-- What I've used R for so far at Lincoln
-
---
+- What I've used R for at Lincoln
 
 - How can you learn to use R?
+
+]
 
 <br>
 
 --
 
+.center[
 __I'm not here to teach a programming class!__
+]
 
 ---
+
+class: dv
 
 # What the heck is R?
 
@@ -124,8 +139,6 @@ __I'm not here to teach a programming class!__
 
 _Some background:_
 
---
-
 .pull-left[
 
 - A programming language
@@ -134,11 +147,10 @@ _Some background:_
 
 ]
 
---
-
 .pull-right[
 
 - Currently used for _data analysis_
+
     - Uber
     
     - Amgen Phamaceutical 
@@ -156,6 +168,8 @@ _Some background:_
 ]
   
 ---
+
+class: dv
 
 # What can I use R for?
 
@@ -196,7 +210,7 @@ _Some background:_
 
 ---
 
-class: center, middle
+class: dv, center, middle
 
 # Anything else?
 
@@ -206,23 +220,26 @@ class: center, middle
 
 - Absolutely! Lets look at some examples.
 
-
 ---
 
 # 1 - Beautiful visualizations
 
-```{r, echo=FALSE, out.width='100%', message=FALSE}
+```{r, echo=FALSE, message=FALSE}
 library(tidyquant)
-library(dygraphs)
+library(highcharter)
 
 data(FANG)
 
-FANG %>%
-  select(date, symbol, adjusted) %>%
-  spread(key = symbol, value = adjusted) %>%
-  as_xts(date_col = date) %>%
-  dygraph() %>%
-  dyLegend(width = 600)
+# Define what goes in the graph
+hchart(FANG,
+       hcaes(x = date, y = adjusted, group = symbol),
+       type = "line") %>%
+  # Axis titles
+  hc_xAxis(title  = list(text = "")) %>%
+  hc_yAxis(title  = list(text = "Adjusted Close Price")) %>%
+  hc_title(text   = "FANG Stocks Over 10 Years") %>%
+  # Zoom type
+  hc_chart(zoomType = "x")
 ```
 
 ???
@@ -234,6 +251,8 @@ FANG %>%
 - SHOW OFF DYGRAPH
 
 ---
+
+class: dv
 
 # 1 - Beautiful visualizations
 
@@ -247,30 +266,47 @@ I'll never be able to do that...
 
 --
 
-```{r, echo=TRUE, eval = FALSE}
-# Required packages (libraries)
+```{r}
+# Required packages
 library(tidyquant)
-library(dygraphs)
+library(highcharter)
 
-# The dataset was included in one of the packages
+# Dataset included in one of the packages
 data(FANG)
 
-# This code creates the graph
-FANG %>%
-  # These lines manipulate data into the right form
-  select(date, symbol, adjusted) %>%
-  spread(key = symbol, value = adjusted) %>%
-  as_xts(date_col = date) %>%
-  # These two lines actually graph it
-  dygraph() %>%
-  dyLegend(width = 600)
+# Let's take a look at the first few rows...
+head(FANG)
+```
+
+---
+
+class: dv
+
+# 1 - Beautiful visualizations
+
+I'll never be able to do that...
+
+
+```{r, echo=TRUE, eval = FALSE, message=FALSE}
+# Define what goes in the graph
+hchart(FANG,
+       hcaes(x = date, y = adjusted, group = symbol),
+       type = "line") %>%
+  # Axis titles
+  hc_xAxis(title  = list(text = "")) %>%
+  hc_yAxis(title  = list(text = "Adjusted Close Price")) %>%
+  hc_title(text   = "FANG Stocks Over 10 Years") %>%
+  # Zoom type
+  hc_chart(zoomType = "x")
 ```
 
 --
 
-The best part? I can recreate this with new data whenever I feel like, just by switching out "FANG" for another similarly formatted data set. 
+The best part? Easily reproducible. And easily updated with new data.
 
 ---
+
+class: dv 
 
 # 2 - Reporting / Interactive dashboards
 
@@ -294,6 +330,8 @@ The best part? I can recreate this with new data whenever I feel like, just by s
 
 ---
 
+class: dv
+
 # 3 - Powerpoints? 
 
 ???
@@ -316,8 +354,6 @@ The best part? I can recreate this with new data whenever I feel like, just by s
 
 - Even better, it's hosted in the browser. No more dealing with presentations looking different on different machines.
 
---
-
 - Why? R code, right there, with results.
 
 ```{r}
@@ -327,6 +363,8 @@ my_variable
 ```
 
 ---
+
+class: dv
 
 # 4 - Collaboration / Version control
 
@@ -349,12 +387,8 @@ Alot of people wonder if github is secure enough for their companies' code. Id a
 --
 
   - A backup of your code
-  
---
 
   - Version control for when you really screw something up
-
---
 
   - Branch / Rebase / Merge workflow for collaboration (Model Development anyone?)
 
@@ -376,6 +410,8 @@ Alot of people wonder if github is secure enough for their companies' code. Id a
   - Absolutely.
 
 ---
+
+class: dv
 
 # How can R do so much, and still be free?
 
@@ -399,11 +435,7 @@ Agh more jargon, yes what the heck is a package?
 
   - Collections of code that extend R
 
---
-
   - Written and reviewed by the community
-
---
 
   - Generally a package _does one thing well_
 
@@ -411,23 +443,17 @@ Agh more jargon, yes what the heck is a package?
 
 - Examples
 
---
-
   - _ggplot2_ - Visualization
-  
---
   
   - _dplyr / tidyr_ - Manipulating data (kind of like pivot tables)
   
---
-  
   - _readr / readxl_ - Robustly read in data sets (Text, Excel, SAS)
-
---
   
   - _Rcpp_ - An R interface to C++ (speed up code!)
 
 ---
+
+class: dv
 
 # How is R used out there in the real world?
 
@@ -465,6 +491,43 @@ The other piece Id like to talk about is airbnb's internal package, Rbnb. While 
 
 ---
 
+class: dv
+
+# [RStudio Connect](https://www.rstudio.com/products/connect/)
+
+???
+
+Instead of blabbing about it, im just going to show you this quick video.
+
+--
+
+- Highlights
+    - Company wide hosting of reports and Shiny applications
+    
+    - Schedulable / Emails
+    
+    - Controlled access to all content - IT is happy
+    
+    - Push button deployment
+
+--
+
+- Scaling R Shiny processes
+
+- R Markdown reports
+
+- Annual Cost
+
+    - 20 users   = $15k 
+    
+    - 100 users  = $25k 
+    
+    - Enterprise = ~$85k?
+    
+---
+
+class: dv
+
 # How have I used R so far at Lincoln?
 
 ???
@@ -491,11 +554,13 @@ _Project 1: Interactive reporting using R and Shiny_
 
   - _Challenge:_ 
   
-      - Create an automated process to aggregate _yearly_ book value and yield data for each portfolio, then display those results in a way to compare this set of 50 year forecasts to previous sets to make sure nothing drastic has changed. 
+      - Create an automated process to aggregate _yearly_ book value and yield data for each portfolio, then display those results in a way to compare this set of 50 year forecasts to previous sets. 
       
       - Make it easy to run the analysis again next quarter with new data.
   
 ---
+
+class: dv
 
 # Project 1 - Solution
 
@@ -507,9 +572,9 @@ _Project 1: Interactive reporting using R and Shiny_
 
 --
     
-- _New process - 2 R scripts:_
+- _New process - 2 parameterized R scripts:_
 
-  - R script 1:
+  1 - Summarize:
       
       - Pulls in all 60 files and combines them into 1 dataset
         
@@ -517,15 +582,17 @@ _Project 1: Interactive reporting using R and Shiny_
       
       - Exports them to Excel and Rds (R data set) files
 
-  - R script 2:
+  2 - Visualize:
   
       - Use the Shiny R package to create an [interactive web visualization](https://davisvaughan.shinyapps.io/3-Compare-Blends/) of the results
       
-      - Compare this set of results to previous year's
+      - Compare this set of results to previous years
       
       - Combine multiple portfolios together to see how they might perform in aggregate
 
 ---
+
+class: dv
 
 # How have I used R so far at Lincoln?
 
@@ -534,6 +601,8 @@ _Project 1: Interactive reporting using R and Shiny_
 Its important to note that we couldn't use the IRR function from Excel here. In some cases, the IRR wasn't used to discount for the entire period, but instead a negative discount rate was used if the cumulative discounted cash flow ever fell below 0.
 
 --
+
+class: dv
 
 _Project 2: IRR calculations with variable discount rates_
 
@@ -550,9 +619,9 @@ _Project 2: IRR calculations with variable discount rates_
   
       - An Excel workbook where the IRR is calculated for the 2400 total scenarios using goal seek
       
-      - Cannot use the IRR function in Excel. We want to change to a low discount rate (5%) if cumulative cash flows drop below 0.
+      - Cannot use the IRR function in Excel. We want to change to a low discount rate (5%) if cumulative cash flows drop below 0
       
-      - __Each product takes 15 minutes to run. 12 products. 3 hours total.__
+      - __Each product takes 15 minutes to run. 12 products. 3 hours total!__
 
 --
 
@@ -561,6 +630,8 @@ _Project 2: IRR calculations with variable discount rates_
       - Basically, can R do this faster?
 
 ---
+
+class: dv
 
 # Project 2 - Solution
 
@@ -617,6 +688,8 @@ No joke, my face looked exactly like this the first time it finished.
 
 ---
 
+class: dv
+
 # To learn more...
 
 Hopefully I've been able to show you some benefits of using R.
@@ -635,10 +708,13 @@ If you want to learn more:
 
 ---
 
-class: inverse, center, middle
+class: dv, center, middle
 
 # Thank you!
 
-# Questions?
+---
 
+class: dv, center, middle
+
+# Questions?
 
