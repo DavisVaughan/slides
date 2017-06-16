@@ -42,6 +42,25 @@ class: dv
 
 - Previously an intern at DataCamp
 
+---
+
+
+class: dv
+
+# Who am I?
+
+???
+
+- Thank you all for being here today
+
+- Acutely aware that the word packages mean nothing to you right now
+
+- tidyquant is my way of giving back to the R community to try and help make financial analysis in R a little bit easier.
+
+- timekit provides some helper functions for time series analysis
+
+- Probably the most important thing on this slide, I've spent alot of time trying to master the syntax of R, and finding resources to help me along the way. In my experience, you will run into things you don't understand, and for awhile you'll look like a deer caught in headlights, but one of the best things about R is the active community asking questions all across the internet, so your question has likely already been answered, and is probably just a google search away.
+
 --
 
 - R enthusiast
@@ -145,18 +164,20 @@ _Some background:_
 
 - Historically used in academia and statistics
 
+- Historically hard to learn / strange syntax
+
 ]
+
+--
 
 .pull-right[
 
 - Currently used for _data analysis_
 
-    - Uber
-    
-    - Amgen Phamaceutical 
-    
-    - [Liberty Mutual](https://www.rstudio.com/resources/customer-spotlight/liberty-mutual-story/)
+    - Uber, Amgen, [Liberty Mutual](https://www.rstudio.com/resources/customer-spotlight/liberty-mutual-story/)
   
+- Much easier to get started
+
 ]
 
 --
