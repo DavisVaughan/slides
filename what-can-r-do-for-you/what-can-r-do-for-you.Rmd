@@ -73,9 +73,12 @@ class: dv
       - _timekit_ - Helpers for time series analysis, and for forecasting using machine learning techniques
   
 --
-  
-- Lot's of time banging my head against the wall while battling R
 
+<br> 
+
+.center[  
+### Lot's of time banging my head against the wall fighting with R.
+]
 ---
 
 class: dv center middle
@@ -137,14 +140,14 @@ Part 2
 --
 
 .center[
-__I'm not here to teach a programming class!__
+### I'm not here to teach a programming class!
 ]
 
 ---
 
 class: dv
 
-# What the heck is R?
+# What on earth is R?
 
 ???
 
@@ -313,10 +316,12 @@ I'll never be able to do that...
 hchart(FANG,
        hcaes(x = date, y = adjusted, group = symbol),
        type = "line") %>%
+  
   # Axis titles
   hc_xAxis(title  = list(text = "")) %>%
   hc_yAxis(title  = list(text = "Adjusted Close Price")) %>%
   hc_title(text   = "FANG Stocks Over 10 Years") %>%
+  
   # Zoom type
   hc_chart(zoomType = "x")
 ```
@@ -324,6 +329,63 @@ hchart(FANG,
 --
 
 The best part? Easily reproducible. And easily updated with new data.
+
+---
+
+class: dv
+
+# 1 - Beautiful visualizations
+
+* A full suite of flexible graphing tools
+
+```{r, echo=FALSE, message=FALSE, eval=FALSE}
+mpg$cyl <- factor(mpg$cyl)
+
+# Set the data source, and what goes on the X axis
+ggplot(data = mpg, aes(x = cty)) +
+  
+    # Add a density chart, separated by cylinder
+    geom_density(aes(fill = cyl), alpha = .8) +
+  
+    # Axis labels
+    labs(title    = "Density plot",  
+         subtitle = "City Mileage Grouped by Number of cylinders",
+         x        = "City Mileage", 
+         fill     = "# Cylinders")
+
+ggsave("ggplot.png", width = 10, height = 6, units = "in")
+```
+
+![](ggplot.png)
+
+---
+
+class: dv
+
+# 1 - Beautiful visualizations
+
+* A full suite of flexible graphing tools
+
+  - Very little code required!
+
+```{r, echo=FALSE}
+mpg$cyl <- factor(mpg$cyl)
+```
+
+
+```{r, echo=TRUE, eval=FALSE, message=FALSE, fig.width=10, fig.height=6}
+# Set the data source, and what goes on the X axis
+ggplot(data = mpg, aes(x = cty)) +
+  
+    # Add a density chart, separated by cylinder
+    geom_density(aes(fill = cyl), alpha = .8) +
+  
+    # Axis labels
+    labs(title    = "Density plot",  
+         subtitle = "City Mileage Grouped by Number of cylinders",
+         x        = "City Mileage", 
+         fill     = "# Cylinders")
+```
 
 ---
 
@@ -369,66 +431,107 @@ class: dv
 
 --
 
-- Yes! This presentation was created in R.
+  - Yes! This presentation was created in R.
 
 --
 
-- Even better, it's hosted in the browser. No more dealing with presentations looking different on different machines.
+- Why?
 
-- Why? R code, right there, with results.
+  - It's hosted in the browser. No more dealing with presentations looking different on different machines.
+
+  - R code, right there, with results.
+
+```{r, echo=FALSE}
+library(broom)
+```
 
 ```{r}
-my_variable <- "hello world"
-
-my_variable
+lm(cty ~ cyl, data = mpg) %>%       # Linear regression
+  glance() %>%                      # Extract summary statistics
+  select(adj.r.squared, p.value)    # Select 2 of them
 ```
 
 ---
 
 class: dv
 
-# 4 - Collaboration / Version control
+# 4 - Database connectivity
 
 ???
 
-What is github? Github is a programmer's best friend. If youve never heard of it, its a great place to host any code, like R code, and it has a few key functions. 
+You've all likely suffered through connecting to Access / SQL Server databases through VBA. With R, that pain is mostly a thing of the past. 
 
-1) Its a great backup for your code, so if you need to move from one computer to another, you can. Its also faster than the network drive, so thats always good. 
 
-2) It uses Git for version control, meaning that if you screw something up in your code, you can always roll it back to any point in time, and start over. This is priceless, and has saved me a number of times. 
-
-3) I assume alot of you have heard of Alfa's Model Development software that the ALM group is reviewing. From what I've seen, it follows the same workflow as github - Branch off of Master when you want to create a new feature, work on it, rebase to get any changes that have happened in Master since you branched, and then merge back into master. This workflow is what allows multiple people to work on the same project at once, and it applies to R as well as Alfa.
-
-Alot of people wonder if github is secure enough for their companies' code. Id argue yes, just based on the list of clients that the Github Enterprise software claims to have. I dont think that NASA or Airbnb would use it unless they thought it was secure.
 
 --
 
-- Github - A programmer's best friend.
+- DBI - An interface for all DBMS's
+
+  - odbc (Microsoft Access), RSQLServer, RMySQL
   
 --
 
-  - A backup of your code
+```{r, eval = FALSE}
+library(DBI)
 
-  - Version control for when you really screw something up
+# Connect to the database using the Data Source Name
+cn <- dbConnect(odbc::odbc(), dsn = "access-odbc")
 
-  - Branch / Rebase / Merge workflow for collaboration (Model Development anyone?)
+# Send a SQL query and return it right into an R object
+limited_rows <- dbGetQuery(cn,
+ statement = "SELECT * 
+              FROM 1q16_ChubbNonPar
+              WHERE `//ALFA_PLANCODE` = '10T14'
+              AND   ALFA_IssueAge     = 18")
+
+limited_rows
+# //ALFA_PLANCODE ALFA_IssueAge ALFA_Sex ...
+#           10T14            18        M ...
+#           10T14            18        F ...
+```
+
+
+---
+
+class: dv
+
+# 4 - Database connectivity
+
+???
+
+You've all likely suffered through connecting to Access / SQL Server databases through VBA. With R, that pain is mostly a thing of the past. 
+
+
 
 --
 
-- Is it secure?
-  - Yes, [Github Enterprise](https://enterprise.github.com/home) is used by companies such as NASA, SAP, Airbnb, etc to host their code
+- dplyr - Functions that work on R objects or SQL tables
+
+  - No SQL code is written!
 
 --
 
-- Is it easy?
-  - Eh - Is anything at first?
-  
-  - Luckily, built in support in RStudio
+```{r, eval = FALSE}
+library(DBI)
+library(dplyr)
 
---
+# Connect to the database using the Data Source Name
+cn <- dbConnect(odbc::odbc(), dsn = "access-odbc")
 
-- Is it worth it?
-  - Absolutely.
+# Select the table you want to manipulate
+table_1q16 <- tbl(cn, "1q16_ChubbNonPar")
+
+# Use the "filter" function to extract the rows you want
+limited_rows <- filter(table_1q16, 
+                       `//ALFA_PLANCODE` == '10T14',
+                       ALFA_IssueAge     == 18)
+
+limited_rows
+# //ALFA_PLANCODE ALFA_IssueAge ALFA_Sex ...
+#           10T14            18        M ...
+#           10T14            18        F ...
+```
+
 
 ---
 
@@ -456,7 +559,7 @@ Agh more jargon, yes what the heck is a package?
 
   - Collections of code that extend R
 
-  - Written and reviewed by the community
+  - Written and reviewed by the community ( > 12,000 packages)
 
   - Generally a package _does one thing well_
 
@@ -468,7 +571,7 @@ Agh more jargon, yes what the heck is a package?
   
   - _dplyr / tidyr_ - Manipulating data (kind of like pivot tables)
   
-  - _readr / readxl_ - Robustly read in data sets (Text, Excel, SAS)
+  - _readr / readxl_ - Read in data sets (Text, Excel, SAS)
   
   - _Rcpp_ - An R interface to C++ (speed up code!)
 
@@ -502,13 +605,13 @@ The other piece Id like to talk about is airbnb's internal package, Rbnb. While 
 
 - _Rbnb_ - An internal R package that functions as:
 
-      - A consistent workflow to move data between different places in our data infrastructure
+      - A consistent workflow to move data between processes
 
-      - Branded visualization themes, scales, and geoms for ggplot2
+      - Branded visualization for ggplot2
 
-      - R Markdown templates for different types of reports
+      - R Markdown templates for different reports
 
-      - Custom functions to optimize different parts of our workflow
+      - Custom functions to optimize different parts of the workflow
 
 ---
 
@@ -530,20 +633,6 @@ Instead of blabbing about it, im just going to show you this quick video.
     - Controlled access to all content - IT is happy
     
     - Push button deployment
-
---
-
-- Scaling R Shiny processes
-
-- R Markdown reports
-
-- Annual Cost
-
-    - 20 users   = $15k 
-    
-    - 100 users  = $25k 
-    
-    - Enterprise = ~$85k?
     
 ---
 
@@ -708,6 +797,43 @@ grid.raster(img)
 No joke, my face looked exactly like this the first time it finished.
 
 ---
+
+class: dv
+
+# Key takeaways
+
+--
+
+- A great tool for data manipulation
+
+  - Import from Excel or Access (Export to them too)
+  
+  - Perform complex analyses over multiple products at once
+  
+  - It's fast
+
+--
+  
+- Fantastic visualizations
+
+  - ggplot2 for any static, customizable graphs
+  
+  - Shiny for interactive applications
+  
+--
+  
+- Reproducible
+
+  - Every step in the analysis is recorded (easily auditable)
+  
+  - No need to track down what cells a formula refers to
+  
+--
+  
+- It's free
+
+---
+
 
 class: dv
 
