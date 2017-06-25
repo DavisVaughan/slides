@@ -159,15 +159,15 @@ class: dv
 
 --
 
-_Some background:_
-
 .pull-left[
+
+_Historically:_
 
 - A programming language
 
-- Historically used in academia and statistics
+- Hard to learn syntax
 
-- Historically hard to learn / strange syntax
+- Used in academia and statistics
 
 ]
 
@@ -175,21 +175,24 @@ _Some background:_
 
 .pull-right[
 
-- Currently used for _data analysis_
+_Currently:_
 
-    - Uber, Amgen, [Liberty Mutual](https://www.rstudio.com/resources/customer-spotlight/liberty-mutual-story/)
+- A tool for data analysis
+
+- Many easy tools to get started
+
+- Widely used in industry
+
+    - Uber, [Liberty Mutual](https://www.rstudio.com/resources/customer-spotlight/liberty-mutual-story/)
   
-- Much easier to get started
-
 ]
 
 --
 
 .pull-down[
 .center[
-![](airbnb.PNG)
-]
-]
+  ![](airbnb.PNG)
+]]
   
 ---
 
@@ -364,6 +367,43 @@ class: dv
 
 # 1 - Beautiful visualizations
 
+* Fully customizable 
+
+```{r, echo=FALSE, message=FALSE, eval=FALSE}
+mpg$cyl <- factor(mpg$cyl)
+
+# Get the lincoln logo
+img <- png::readPNG("lfg-logo.png")
+g <- rasterGrob(img, interpolate=TRUE)
+
+# Set the data source, and what goes on the X axis
+ggplot(data = mpg, aes(x = cty)) +
+  
+    # Add a density chart, separated by cylinder
+    geom_density(aes(fill = cyl), alpha = .8) +
+  
+    # Axis labels
+    labs(title    = "Density plot",  
+         subtitle = "City Mileage Grouped by Number of cylinders",
+         x        = "City Mileage", 
+         fill     = "# Cylinders") +
+  
+    theme_lincoln() +
+    scale_fill_lincoln() + 
+    annotation_custom(g, xmin=33, xmax=36, ymin=.5, ymax=.55)
+
+
+ggsave("ggplot-lincoln.png", width = 10, height = 6, units = "in")
+```
+
+![](ggplot-lincoln.png)
+
+---
+
+class: dv
+
+# 1 - Beautiful visualizations
+
 * A full suite of flexible graphing tools
 
   - Very little code required!
@@ -438,6 +478,8 @@ class: dv
 - Why?
 
   - It's hosted in the browser. No more dealing with presentations looking different on different machines.
+
+--
 
   - R code, right there, with results.
 
@@ -678,7 +720,7 @@ class: dv
 
 - _Data:_ 
   
-  - The text files are dropped into a named folder (Example: "ARS-1q17")
+  - The text files are dropped into a named folder (Example: "ALM-1q17")
 
 --
     
@@ -837,19 +879,17 @@ class: dv
 
 class: dv
 
-# To learn more...
-
-Hopefully I've been able to show you some benefits of using R.
+# We've only just scratched the surface...
 
 If you want to learn more:
 
 - Another meeting to actually learn the basics of an analysis in R
 
-- https://www.datacamp.com is a paid ($29/month for everything) but great source of practice / videos
+- https://www.datacamp.com - A paid but great source of practice / videos ($29/month for everything)
 
-- http://r4ds.had.co.nz/ - A free book by the R expert himself, Hadley Wickham. A great source of information into something called the _tidyverse_, the easiest and most intuitive way to program with R
+- http://r4ds.had.co.nz/ - A free book by the R expert himself, Hadley Wickham. The easiest way to learn R
 
-- Stack Overflow for answers to specific questions when you get stuck
+- Stack Overflow when you get stuck
 
 - Just ask! I'm always happy to answer any questions
 
