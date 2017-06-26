@@ -319,7 +319,7 @@ I'll never be able to do that...
 
 --
 
-```{r}
+```{r, message=FALSE}
 # Required packages
 library(tidyquant)
 library(highcharter)
