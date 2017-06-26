@@ -198,6 +198,32 @@ _Currently:_
 
 class: dv
 
+# R in Insurance
+
+- New ASA requirements - Predictive Analytics Exam
+
+  - Computer module _using R_
+  
+  - "Candidates will use computer packages to analyze data sets and then communicate their findings."
+
+--
+
+- SOA Predictive Analytics Pilot Certificate Program
+
+  - 6 modules dedicated to learning how to explore data, design projects, and create models in R
+
+--
+
+- R in Insurance - Paris
+
+  - "R as a Modeling Tool for Life Insurers - Ernst and Young"
+  
+  - "Individual claims reserving: a survey - Milliman"
+
+---
+
+class: dv
+
 # What can I use R for?
 
 ???
