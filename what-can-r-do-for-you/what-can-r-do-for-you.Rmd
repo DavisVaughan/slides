@@ -278,21 +278,21 @@ class: dv, center, middle
 # 1 - Beautiful visualizations
 
 ```{r, echo=FALSE, message=FALSE}
-library(tidyquant)
-library(highcharter)
-
-data(FANG)
-
-# Define what goes in the graph
-hchart(FANG,
-       hcaes(x = date, y = adjusted, group = symbol),
-       type = "line") %>%
-  # Axis titles
-  hc_xAxis(title  = list(text = "")) %>%
-  hc_yAxis(title  = list(text = "Adjusted Close Price")) %>%
-  hc_title(text   = "FANG Stocks Over 10 Years") %>%
-  # Zoom type
-  hc_chart(zoomType = "x")
+# library(tidyquant)
+# library(highcharter)
+# 
+# data(FANG)
+# 
+# # Define what goes in the graph
+# hchart(FANG,
+#        hcaes(x = date, y = adjusted, group = symbol),
+#        type = "line") %>%
+#   # Axis titles
+#   hc_xAxis(title  = list(text = "")) %>%
+#   hc_yAxis(title  = list(text = "Adjusted Close Price")) %>%
+#   hc_title(text   = "FANG Stocks Over 10 Years") %>%
+#   # Zoom type
+#   hc_chart(zoomType = "x")
 ```
 
 ???
