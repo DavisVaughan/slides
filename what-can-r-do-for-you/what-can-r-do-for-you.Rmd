@@ -1,0 +1,933 @@
+---
+title: "What can R do for _you_?"
+author: "Davis Vaughan"
+output:
+  xaringan::moon_reader:
+    css: ["default", "custom.css"]
+    chakra: libs/remark-latest.min.js
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r setup, include=FALSE}
+options(htmltools.dir.version = FALSE)
+```
+
+class: dv
+
+# Who am I?
+
+???
+
+- Thank you all for being here today
+
+- Acutely aware that the word packages mean nothing to you right now
+
+- tidyquant is my way of giving back to the R community to try and help make financial analysis in R a little bit easier.
+
+- timekit provides some helper functions for time series analysis
+
+- Probably the most important thing on this slide, I've spent alot of time trying to master the syntax of R, and finding resources to help me along the way. In my experience, you will run into things you don't understand, and for awhile you'll look like a deer caught in headlights, but one of the best things about R is the active community asking questions all across the internet, so your question has likely already been answered, and is probably just a google search away.
+
+--
+
+- Davis Vaughan
+
+- Actuarial intern in ALM
+
+- Master's student at UNC Charlotte
+
+- Previously an intern at DataCamp
+
+---
+
+
+class: dv
+
+# Who am I?
+
+???
+
+- Thank you all for being here today
+
+- Acutely aware that the word packages mean nothing to you right now
+
+- tidyquant is my way of giving back to the R community to try and help make financial analysis in R a little bit easier.
+
+- timekit provides some helper functions for time series analysis
+
+- Probably the most important thing on this slide, I've spent alot of time trying to master the syntax of R, and finding resources to help me along the way. In my experience, you will run into things you don't understand, and for awhile you'll look like a deer caught in headlights, but one of the best things about R is the active community asking questions all across the internet, so your question has likely already been answered, and is probably just a google search away.
+
+--
+
+- R enthusiast
+
+  - 3+ years of R programming
+
+  - Co-author of 2 R packages (Currently this means nothing to you)
+      - _tidyquant_ - Making financial analysis easier in R
+      
+      - _timekit_ - Helpers for time series analysis, and for forecasting using machine learning techniques
+  
+--
+
+<br> 
+
+.center[  
+### Lot's of time banging my head against the wall fighting with R.
+]
+---
+
+class: dv center middle
+
+# Why am I here?
+
+--
+
+# I just really like R
+
+---
+
+class: dv
+
+# Why am I here?
+
+???
+
+- Bells: Show off some visualizations, something called shiny, and teach you a bit about collaboration with R
+
+- Other companies: Airbnb
+
+- 2 projects so far
+
+- Resources to learn R
+
+- Importantly, NOT here to teach a programming class
+
+--
+
+.pull-left[
+
+Part 1
+
+- A high level intro to R
+
+- What is R used for?
+
+- Bells and whistles
+
+]
+
+--
+
+.pull-right[
+
+Part 2
+
+- What other companies use R for
+
+- What I've used R for at Lincoln
+
+- How can you learn to use R?
+
+]
+
+<br>
+
+--
+
+.center[
+### I'm not here to teach a programming class!
+]
+
+---
+
+class: dv
+
+# What on earth is R?
+
+???
+
+- If you're sitting there, asking yourself this question, that's fine. Let's give you a little bit of background. 
+
+- So what is R? 
+
+- Talk about airbnb pic
+
+--
+
+.pull-left[
+
+_Historically:_
+
+- A programming language
+
+- Hard to learn syntax
+
+- Used in academia and statistics
+
+]
+
+--
+
+.pull-right[
+
+_Currently:_
+
+- A tool for data analysis
+
+- Many easy tools to get started
+
+- Widely used in industry
+
+    - Uber, [Liberty Mutual](https://www.rstudio.com/resources/customer-spotlight/liberty-mutual-story/)
+  
+]
+
+--
+
+.pull-down[
+.center[
+  ![](airbnb.PNG)
+]]
+  
+---
+
+class: dv
+
+# R in Insurance
+
+- New ASA requirements - Predictive Analytics Exam
+
+  - Computer module _using R_
+  
+  - "Candidates will use computer packages to analyze data sets and then communicate their findings."
+
+--
+
+- SOA Predictive Analytics Pilot Certificate Program
+
+  - 6 modules dedicated to learning how to explore data, design projects, and create models in R
+
+--
+
+- R in Insurance - Paris
+
+  - "R as a Modeling Tool for Life Insurers - Ernst and Young"
+  
+  - "Individual claims reserving: a survey - Milliman"
+
+---
+
+class: dv
+
+# What can I use R for?
+
+???
+
+- It can function like a programmatic pivot table from excel, but in reality it can do so much more.
+
+- Things like regression, random forests, simulations, or survival analysis are only a function call away
+
+- There is this great data analysis work flow that applies if youre doing data analysis, no matter what field you work in. 
+  - Its a cycle, the 3 steps are not something you get right the first time around.
+  
+- What you see underneath these headings are packages, that word I mentioned earlier that I said you wouldnt understand. I'll get to them later, but just know that there are dedicated resources in R designed to help with each one of these steps.
+
+--
+
+.pull-left[
+
+- Generally a great tool for manipulating data...
+
+]
+
+--
+
+.pull-right[
+
+- ...and for performing complex calculations and analyses
+
+]
+
+--
+
+.pull-down[
+.center[
+  ![](analysis-flow.png)
+]
+]
+
+---
+
+class: dv, center, middle
+
+# Anything else?
+
+???
+
+- So it sounds like R can be a tool in my data analysis toolbox. Maybe it could be something to use instead of Excel. But is that all it does? Is there anything else?
+
+- Absolutely! Lets look at some examples.
+
+---
+
+# 1 - Beautiful visualizations
+
+```{r, echo=FALSE, message=FALSE}
+# library(tidyquant)
+# library(highcharter)
+# 
+# data(FANG)
+# 
+# # Define what goes in the graph
+# hchart(FANG,
+#        hcaes(x = date, y = adjusted, group = symbol),
+#        type = "line") %>%
+#   # Axis titles
+#   hc_xAxis(title  = list(text = "")) %>%
+#   hc_yAxis(title  = list(text = "Adjusted Close Price")) %>%
+#   hc_title(text   = "FANG Stocks Over 10 Years") %>%
+#   # Zoom type
+#   hc_chart(zoomType = "x")
+```
+
+???
+
+- One thing R is well known for is its beautiful graphics, so i figured id give you one example of that to start.
+
+- This is a graph of 4 stocks, over the past 10 years. It's created using something called dygraph, and its even interactive.
+
+- SHOW OFF DYGRAPH
+
+---
+
+class: dv
+
+# 1 - Beautiful visualizations
+
+???
+
+- If youre sitting there thinking, im not a programmer, ill never be able to do that, just look at the amount of code it took me to produce this.
+
+--
+
+I'll never be able to do that...
+
+--
+
+```{r, message=FALSE}
+# Required packages
+library(tidyquant)
+library(highcharter)
+
+# Dataset included in one of the packages
+data(FANG)
+
+# Let's take a look at the first few rows...
+head(FANG)
+```
+
+---
+
+class: dv
+
+# 1 - Beautiful visualizations
+
+I'll never be able to do that...
+
+
+```{r, echo=TRUE, eval = FALSE, message=FALSE}
+# Define what goes in the graph
+hchart(FANG,
+       hcaes(x = date, y = adjusted, group = symbol),
+       type = "line") %>%
+  
+  # Axis titles
+  hc_xAxis(title  = list(text = "")) %>%
+  hc_yAxis(title  = list(text = "Adjusted Close Price")) %>%
+  hc_title(text   = "FANG Stocks Over 10 Years") %>%
+  
+  # Zoom type
+  hc_chart(zoomType = "x")
+```
+
+--
+
+The best part? Easily reproducible. And easily updated with new data.
+
+---
+
+class: dv
+
+# 1 - Beautiful visualizations
+
+* A full suite of flexible graphing tools
+
+```{r, echo=FALSE, message=FALSE, eval=FALSE}
+mpg$cyl <- factor(mpg$cyl)
+
+# Set the data source, and what goes on the X axis
+ggplot(data = mpg, aes(x = cty)) +
+  
+    # Add a density chart, separated by cylinder
+    geom_density(aes(fill = cyl), alpha = .8) +
+  
+    # Axis labels
+    labs(title    = "Density plot",  
+         subtitle = "City Mileage Grouped by Number of cylinders",
+         x        = "City Mileage", 
+         fill     = "# Cylinders")
+
+ggsave("ggplot.png", width = 10, height = 6, units = "in")
+```
+
+![](ggplot.png)
+
+---
+
+class: dv
+
+# 1 - Beautiful visualizations
+
+* Fully customizable 
+
+```{r, echo=FALSE, message=FALSE, eval=FALSE}
+mpg$cyl <- factor(mpg$cyl)
+
+# Get the lincoln logo
+img <- png::readPNG("lfg-logo.png")
+g <- rasterGrob(img, interpolate=TRUE)
+
+# Set the data source, and what goes on the X axis
+ggplot(data = mpg, aes(x = cty)) +
+  
+    # Add a density chart, separated by cylinder
+    geom_density(aes(fill = cyl), alpha = .8) +
+  
+    # Axis labels
+    labs(title    = "Density plot",  
+         subtitle = "City Mileage Grouped by Number of cylinders",
+         x        = "City Mileage", 
+         fill     = "# Cylinders") +
+  
+    theme_lincoln() +
+    scale_fill_lincoln() + 
+    annotation_custom(g, xmin=33, xmax=36, ymin=.5, ymax=.55)
+
+
+ggsave("ggplot-lincoln.png", width = 10, height = 6, units = "in")
+```
+
+![](ggplot-lincoln.png)
+
+---
+
+class: dv
+
+# 1 - Beautiful visualizations
+
+* A full suite of flexible graphing tools
+
+  - Very little code required!
+
+```{r, echo=FALSE}
+mpg$cyl <- factor(mpg$cyl)
+```
+
+
+```{r, echo=TRUE, eval=FALSE, message=FALSE, fig.width=10, fig.height=6}
+# Set the data source, and what goes on the X axis
+ggplot(data = mpg, aes(x = cty)) +
+  
+    # Add a density chart, separated by cylinder
+    geom_density(aes(fill = cyl), alpha = .8) +
+  
+    # Axis labels
+    labs(title    = "Density plot",  
+         subtitle = "City Mileage Grouped by Number of cylinders",
+         x        = "City Mileage", 
+         fill     = "# Cylinders")
+```
+
+---
+
+class: dv 
+
+# 2 - Reporting / Interactive dashboards
+
+![](monte-carlo-retirement.PNG)
+
+.footnote[
+[Mephisto Software](http://www.mephistosoftware.com/shiny/retsim/)
+]
+
+???
+
+- Another great feature of R is for reporting and dashboards using something like Shiny. 
+
+- Show off the link, the entire site was created from R
+
+- Notice how this is a URL, seemingly just any old website, running R in the background.
+
+- Since R can connect to databases, you could imagine having something like a real time dashboard populated from data queried from your internal database.
+
+- This reporting aspect of R is a great way for a developer to communicate their model results to upper management in a more earily digestable format.
+
+---
+
+class: dv
+
+# 3 - Powerpoints? 
+
+???
+
+- There are a number of ways to create presentations in R, im using something relatively new called xaringan.
+
+- You might be wondering, why would I ever want to do that? I promise, im not insane. There are a few reasons. One is portability. You can host these powerpoints on the web, and interact with them from a browser. In this way, you dont have to worry about the presentation looking different on a different version of powerpoint, or maybe you had it on a Mac running Keynote and need to use a PC. That wouldnt work, so in this case R's presentation feature abstracts away all that.
+
+- Another reason is that code can be shown, and run, right there in the presentation. When I typed this up, i didnt include that output, R did it for me.
+
+--
+
+- R can do that?
+
+--
+
+  - Yes! This presentation was created in R.
+
+--
+
+- Why?
+
+  - It's hosted in the browser. No more dealing with presentations looking different on different machines.
+
+--
+
+  - R code, right there, with results.
+
+```{r, echo=FALSE}
+library(broom)
+```
+
+```{r}
+lm(cty ~ cyl, data = mpg) %>%       # Linear regression
+  glance() %>%                      # Extract summary statistics
+  select(adj.r.squared, p.value)    # Select 2 of them
+```
+
+---
+
+class: dv
+
+# 4 - Database connectivity
+
+???
+
+You've all likely suffered through connecting to Access / SQL Server databases through VBA. With R, that pain is mostly a thing of the past. 
+
+
+
+--
+
+- DBI - An interface for all DBMS's
+
+  - odbc (Microsoft Access), RSQLServer, RMySQL
+  
+--
+
+```{r, eval = FALSE}
+library(DBI)
+
+# Connect to the database using the Data Source Name
+cn <- dbConnect(odbc::odbc(), dsn = "access-odbc")
+
+# Send a SQL query and return it right into an R object
+limited_rows <- dbGetQuery(cn,
+ statement = "SELECT * 
+              FROM 1q16_ChubbNonPar
+              WHERE `//ALFA_PLANCODE` = '10T14'
+              AND   ALFA_IssueAge     = 18")
+
+limited_rows
+# //ALFA_PLANCODE ALFA_IssueAge ALFA_Sex ...
+#           10T14            18        M ...
+#           10T14            18        F ...
+```
+
+
+---
+
+class: dv
+
+# 4 - Database connectivity
+
+???
+
+You've all likely suffered through connecting to Access / SQL Server databases through VBA. With R, that pain is mostly a thing of the past. 
+
+
+
+--
+
+- dplyr - Functions that work on R objects or SQL tables
+
+  - No SQL code is written!
+
+--
+
+```{r, eval = FALSE}
+library(DBI)
+library(dplyr)
+
+# Connect to the database using the Data Source Name
+cn <- dbConnect(odbc::odbc(), dsn = "access-odbc")
+
+# Select the table you want to manipulate
+table_1q16 <- tbl(cn, "1q16_ChubbNonPar")
+
+# Use the "filter" function to extract the rows you want
+limited_rows <- filter(table_1q16, 
+                       `//ALFA_PLANCODE` == '10T14',
+                       ALFA_IssueAge     == 18)
+
+limited_rows
+# //ALFA_PLANCODE ALFA_IssueAge ALFA_Sex ...
+#           10T14            18        M ...
+#           10T14            18        F ...
+```
+
+
+---
+
+class: dv
+
+# How can R do so much, and still be free?
+
+???
+
+At this point, you might be wondering how on earth R can do so much and still be free. The correct answer actually comes from the question. Its because R is open source and free that it can do so much. I think its finally time to talk a little bit about packages.
+
+Agh more jargon, yes what the heck is a package? 
+
+--
+
+- Open source
+
+  - Developers around the world contribute through _packages_
+
+--
+
+- Agh, more jargon - Packages?
+
+--
+
+  - Collections of code that extend R
+
+  - Written and reviewed by the community ( > 12,000 packages)
+
+  - Generally a package _does one thing well_
+
+--
+
+- Examples
+
+  - _ggplot2_ - Visualization
+  
+  - _dplyr / tidyr_ - Manipulating data (kind of like pivot tables)
+  
+  - _readr / readxl_ - Read in data sets (Text, Excel, SAS)
+  
+  - _Rcpp_ - An R interface to C++ (speed up code!)
+
+---
+
+class: dv
+
+# How is R used out there in the real world?
+
+???
+
+So, now that you know about packages, I feel comfortable talking about how R is used out there in the real world. I'm going to use airbnb as my case study. They have something called a knowledge repo, which works something like this. Say Bob wants to work on an analysis, maybe he's interested in analyzing the output of some Alfa projections. So he takes the data into R, does his analysis, while providing plenty of comments along the way, and when he's finished, he can submit that analysis to the knowledge repo, where others throughout the company can view it, comment on it, and search for other analyses that they are interested in. This is by far the fastest way to spread information throughout a company, and it forces you to take some time thinking about telling a story with your analyses so that other's can understand what youre doing and why youre doing it. 
+
+It also means that when you look back on that 6 months from now, you can instantly catch back up on the code you wrote, because you commented it thoroughly. 
+
+Airbnb set up their own Knowledge Repo, but recently, RStudio has created a paid service called RStudio Connect, which can basically set all of this up for you, and you can submit your reports, or shiny dashboards like i showed earlier, right from R.
+
+The other piece Id like to talk about is airbnb's internal package, Rbnb. While most developers release their packages for everyone to use, that doesnt mean that they have to. Its becoming more common for companies to develop their own internal packages for company use. In Airbnb's case, their package mainly focuses on the pieces you see here.....
+
+--
+
+[__Airbnb:__](https://medium.com/airbnb-engineering/using-r-packages-and-education-to-scale-data-science-at-airbnb-906faa58e12d) 
+
+--
+
+- _Knowledge Repo_ - A central hub of company information / analyses / reports, all written in R.
+
+  - "As of today, our internal Knowledge Repo has nearly 500 R Markdown research reports using the Rbnb package."
+
+--
+
+- _Rbnb_ - An internal R package that functions as:
+
+      - A consistent workflow to move data between processes
+
+      - Branded visualization for ggplot2
+
+      - R Markdown templates for different reports
+
+      - Custom functions to optimize different parts of the workflow
+
+---
+
+class: dv
+
+# [RStudio Connect](https://www.rstudio.com/products/connect/)
+
+???
+
+Instead of blabbing about it, im just going to show you this quick video.
+
+--
+
+- Highlights
+    - Company wide hosting of reports and Shiny applications
+    
+    - Schedulable / Emails
+    
+    - Controlled access to all content - IT is happy
+    
+    - Push button deployment
+    
+---
+
+class: dv
+
+# How have I used R so far at Lincoln?
+
+???
+
+Right, so right now its a very manual process, so lets see what I came up with.
+
+--
+
+_Project 1: Interactive reporting using R and Shiny_
+
+--
+
+  - _Data:_ 
+  
+      - 60+ raw ARS text files from Alfa containing 50 years of forecasted monthly book value and yield data for a set of Lincoln portfolios
+
+--
+
+  - _Current process:_
+  
+      - An Excel workbook where the 60 files are copied in, references are manually set, and charts have to be somewhat manually updated.
+
+--
+
+  - _Challenge:_ 
+  
+      - Create an automated process to aggregate _yearly_ book value and yield data for each portfolio, then display those results in a way to compare this set of 50 year forecasts to previous sets. 
+      
+      - Make it easy to run the analysis again next quarter with new data.
+  
+---
+
+class: dv
+
+# Project 1 - Solution
+
+--
+
+- _Data:_ 
+  
+  - The text files are dropped into a named folder (Example: "ALM-1q17")
+
+--
+    
+- _New process - 2 parameterized R scripts:_
+
+  1 - Summarize:
+      
+      - Pulls in all 60 files and combines them into 1 dataset
+        
+      - Calculates yearly book value and yield data
+      
+      - Exports them to Excel and Rds (R data set) files
+
+  2 - Visualize:
+  
+      - Use the Shiny R package to create an [interactive web visualization](https://davisvaughan.shinyapps.io/3-Compare-Blends/) of the results
+      
+      - Compare this set of results to previous years
+      
+      - Combine multiple portfolios together to see how they might perform in aggregate
+
+---
+
+class: dv
+
+# How have I used R so far at Lincoln?
+
+???
+
+Its important to note that we couldn't use the IRR function from Excel here. In some cases, the IRR wasn't used to discount for the entire period, but instead a negative discount rate was used if the cumulative discounted cash flow ever fell below 0.
+
+--
+
+class: dv
+
+_Project 2: IRR calculations with variable discount rates_
+
+--
+
+  - _Data:_ 
+  
+      - 12 Lincoln products, 200 scenarios - Each forecasting 40 years of distributable earnings (cash flows)
+      
+      - For each of the 12 products, there is a GAAP Equity value (initial investment)
+--
+
+  - _Current process:_
+  
+      - An Excel workbook where the IRR is calculated for the 2400 total scenarios using goal seek
+      
+      - Cannot use the IRR function in Excel. We want to change to a low discount rate (5%) if cumulative cash flows drop below 0
+      
+      - __Each product takes 15 minutes to run. 12 products. 3 hours total!__
+
+--
+
+  - _Challenge:_ 
+  
+      - Basically, can R do this faster?
+
+---
+
+class: dv
+
+# Project 2 - Solution
+
+???
+
+So how did I use R to solve this one? Let's walk through it. 
+
+Really this is optimizing that formula squared, so that the value is floored at 0, and doesn't go negative right? Since the whole point is to make this difference equal to 0 by changing the IRR.
+
+So what were the results? Drastic, to say the least. We went from a 5-10 minute excel macro, down to a 9 second execution in R. How? A few things, but it mainly boils down to R being vectorized, and having access to a package that lets R run in parallel. For the parallel part, since I have 4 cores on my machine, I was able to distribute the load of this problem equally across the cores, so each core worked on 2400 / 4 optimizations, then returned it back to me at the end.
+
+--
+
+- _Data:_ 
+  
+  - One Excel workbook containing:
+  
+      - The distributable earnings for all of the products and scenarios
+      
+      - The GAAP equity value for each product
+
+--
+    
+- _New process - 1 R script:_
+
+  - Optimization problem! For each of the 2400 scenarios, minimize:
+  
+      - `PV(distributable_earnings) - GAAP_equity`
+      
+      - By varying the IRR to discount with
+      
+      - Use the R function `optimize()`
+
+--
+
+- _Result:_
+
+  -  __This takes 9 seconds in R__
+  
+  - How? R is _vectorized_ and can run _in parallel_ if you set it up correctly
+
+---
+
+```{r fig.width=30, fig.height=20, echo=FALSE}
+library(jpeg)
+library(grid)
+img <- readJPEG("not-bad.jpg")
+grid.raster(img)
+```
+
+???
+
+No joke, my face looked exactly like this the first time it finished.
+
+---
+
+class: dv
+
+# Key takeaways
+
+--
+
+- A great tool for data analysis
+
+  - Import from Excel or Access (Export to them too)
+  
+  - Perform complex analyses over multiple products at once
+  
+  - It's fast
+
+--
+  
+- Fantastic visualizations
+
+  - ggplot2 for any static, customizable graphs
+  
+  - Shiny for interactive applications
+  
+--
+  
+- Reproducible
+
+  - Every step in the analysis is recorded (easily auditable)
+  
+  - No need to track down what cells a formula refers to
+  
+--
+  
+- It's free
+
+---
+
+
+class: dv
+
+# We've only just scratched the surface...
+
+If you want to learn more:
+
+- Another meeting to actually learn the basics of an analysis in R
+
+- https://www.datacamp.com - A paid but great source of practice / videos ($29/month for everything)
+
+- http://r4ds.had.co.nz/ - A free book by the R expert himself, Hadley Wickham. The easiest way to learn R
+
+- Stack Overflow when you get stuck
+
+- Just ask! I'm always happy to answer any questions
+
+---
+
+class: dv, center, middle
+
+# Thank you!
+
+---
+
+class: dv, center, middle
+
+# Questions?
+

@@ -1,0 +1,77 @@
+Package: rmarkdown
+Type: Package
+Title: Dynamic Documents for R
+Version: 1.5.9000
+Authors@R: c(
+  person("JJ", "Allaire", role = c("aut", "cre"), email = "jj@rstudio.com"),
+  person("Joe", "Cheng", role = "aut", email = "joe@rstudio.com"),
+  person("Yihui", "Xie", role = "aut", email = "yihui@rstudio.com"),
+  person("Jonathan", "McPherson", role = "aut", email = "jonathan@rstudio.com"),
+  person("Winston", "Chang", role = "aut", email = "winston@rstudio.com"),
+  person("Jeff", "Allen", role = "aut", email = "jeff@rstudio.com"),
+  person("Hadley", "Wickham", role = "aut", email = "hadley@rstudio.com"),
+  person("Aron", "Atkins", role = "aut", email = "aron@rstudio.com"),
+  person("Rob", "Hyndman", role = "aut", email = "Rob.Hyndman@monash.edu"),
+  person("Ruben", "Arslan", role = "aut", email = "ruben.arslan@uni-goettingen.de"),
+  person(family = "RStudio, Inc.", role = "cph"),
+  person(family = "jQuery Foundation", role = "cph",
+         comment = "jQuery library"),
+  person(family = "jQuery contributors", role = c("ctb", "cph"),
+         comment = "jQuery library; authors listed in inst/rmd/h/jquery-AUTHORS.txt"),
+  person(family = "jQuery UI contributors", role = c("ctb", "cph"),
+         comment = "jQuery UI library; authors listed in inst/rmd/h/jqueryui-AUTHORS.txt"),
+  person("Mark", "Otto", role = "ctb",
+         comment = "Bootstrap library"),
+  person("Jacob", "Thornton", role = "ctb",
+         comment = "Bootstrap library"),
+  person(family = "Bootstrap contributors", role = "ctb",
+         comment = "Bootstrap library"),
+  person(family = "Twitter, Inc", role = "cph",
+         comment = "Bootstrap library"),
+  person("Alexander", "Farkas", role = c("ctb", "cph"),
+         comment = "html5shiv library"),
+  person("Scott", "Jehl", role = c("ctb", "cph"),
+         comment = "Respond.js library"),
+  person("Ivan", "Sagalaev", role = c("ctb", "cph"),
+         comment = "highlight.js library"),
+  person("Greg", "Franko", role = c("ctb", "cph"),
+         comment = "tocify library"),
+  person("Eli", "Grey", role = c("ctb", "cph"),
+         comment = "FileSaver library"),
+  person("John", "MacFarlane", role = c("ctb", "cph"),
+         comment = "Pandoc templates"),
+  person(family = "Google, Inc.", role = c("ctb", "cph"),
+         comment = "ioslides library"),
+  person("Dave", "Raggett", role = "ctb",
+         comment = "slidy library"),
+  person(family = "W3C", role = "cph",
+         comment = "slidy library"),
+  person("Dave", "Gandy", role = c("ctb", "cph"),
+         comment = "Font-Awesome"),
+  person("Ben", "Sperry", role = "ctb",
+         comment = "Ionicons"),
+  person(family = "Drifty", role = "cph",
+         comment = "Ionicons"),
+  person("Aidan", "Lister", role = c("ctb", "cph"), 
+         comment = "jQuery StickyTabs")
+  )
+Author: JJ Allaire, Jonathan McPherson, Yihui Xie, Hadley Wickham, Joe Cheng,
+    Jeff Allen
+Maintainer: JJ Allaire <jj@rstudio.com>
+Description: Convert R Markdown documents into a variety of formats.
+Depends: R (>= 3.0)
+Imports: tools, utils, knitr (>= 1.14), yaml (>= 2.1.5), htmltools (>=
+        0.3.5), caTools, evaluate (>= 0.8), base64enc, jsonlite,
+        rprojroot, methods, stringr (>= 1.2.0)
+Suggests: shiny (>= 0.11), tufte, testthat, digest, tibble
+SystemRequirements: pandoc (>= 1.12.3) - http://pandoc.org
+URL: http://rmarkdown.rstudio.com
+License: GPL-3
+RoxygenNote: 6.0.1
+GithubRepo: rmarkdown
+GithubUsername: rstudio
+GithubRef: master
+GithubSHA1: a1537e433eea4b53205c03f5a5b1b4a5261aef6d
+Origin: RStudioIDE
+Packaged: 2017-06-09 05:08:50 UTC; ubuntu
+Built: R 3.4.0; ; 2017-06-09 17:17:07 UTC; windows

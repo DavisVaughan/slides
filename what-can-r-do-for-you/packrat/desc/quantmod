@@ -1,0 +1,34 @@
+Package: quantmod
+Type: Package
+Title: Quantitative Financial Modelling Framework
+Version: 0.4-8
+Date: 2017-04-18
+Authors@R: c(
+  person(given=c("Jeffrey","A."), family="Ryan", role=c("aut","cph")),
+  person(given=c("Joshua","M."), family="Ulrich", role=c("cre","ctb"), email="josh.m.ulrich@gmail.com"),
+  person(given="Wouter", family="Thielen", role="ctb")
+  )
+Depends: xts(>= 0.9-0), zoo, TTR(>= 0.2), methods
+Imorts: curl
+Suggests: DBI,RMySQL,RSQLite,timeSeries,XML,downloader,jsonlite(>= 1.1)
+Description: Specify, build, trade, and analyse quantitative financial trading strategies.
+LazyLoad: yes
+License: GPL-3
+URL: http://www.quantmod.com https://github.com/joshuaulrich/quantmod
+BugReports: https://github.com/joshuaulrich/quantmod/issues
+Author: Jeffrey A. Ryan [aut, cph],
+  Joshua M. Ulrich [cre, ctb],
+  Wouter Thielen [ctb]
+Maintainer: Joshua M. Ulrich <josh.m.ulrich@gmail.com>
+Built: R 3.4.0; x86_64-w64-mingw32; 2017-05-23 17:17:04 UTC; windows
+Archs: i386, x64
+RemoteType: github
+RemoteHost: https://api.github.com
+RemoteRepo: quantmod
+RemoteUsername: joshuaulrich
+RemoteRef: 157_yahoo_502
+RemoteSha: 97e4df61170ac83994a01de6698ce332141f60dd
+GithubRepo: quantmod
+GithubUsername: joshuaulrich
+GithubRef: 157_yahoo_502
+GithubSHA1: 97e4df61170ac83994a01de6698ce332141f60dd

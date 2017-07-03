@@ -1,0 +1,39 @@
+Package: xaringan
+Type: Package
+Title: Presentation Ninja
+Version: 0.3
+Date: 2017-05-29
+Authors@R: c(
+    person("Yihui", "Xie", role = c("aut", "cre"), email = "xie@yihui.name"),
+    person("Dawei", "Lang", role = "ctb"),
+    person("Ole Petter", "Bang", role = "ctb", comment = "CSS in rmarkdown/templates/xaringan/resources/example.css"),
+    person("Patrick", "Schratz", role = "ctb"),
+    person("Sean", "Lopp", role = "ctb")
+    )
+Description: Create HTML5 slides with R Markdown and the JavaScript library
+    'remark.js' (<https://remarkjs.com>).
+Imports: htmltools, knitr (>= 1.16), servr (>= 0.5), rmarkdown
+Suggests: rstudioapi, testit
+License: MIT + file LICENSE
+URL: https://github.com/yihui/xaringan
+BugReports: https://github.com/yihui/xaringan/issues
+VignetteBuilder: knitr
+RoxygenNote: 6.0.1
+Author: Yihui Xie [aut, cre],
+  Dawei Lang [ctb],
+  Ole Petter Bang [ctb] (CSS in
+    rmarkdown/templates/xaringan/resources/example.css),
+  Patrick Schratz [ctb],
+  Sean Lopp [ctb]
+Maintainer: Yihui Xie <xie@yihui.name>
+Built: R 3.4.0; ; 2017-06-14 11:58:44 UTC; windows
+RemoteType: github
+RemoteHost: https://api.github.com
+RemoteRepo: xaringan
+RemoteUsername: yihui
+RemoteRef: master
+RemoteSha: 0181407ba1d2edd9eac08d1d1b48f7aab3ebc3c1
+GithubRepo: xaringan
+GithubUsername: yihui
+GithubRef: master
+GithubSHA1: 0181407ba1d2edd9eac08d1d1b48f7aab3ebc3c1

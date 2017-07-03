@@ -9,3 +9,4 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ## Presentations
 
+- [What can R do for you?](./what-can-r-do-for-you/what-can-r-do-for-you.html)
