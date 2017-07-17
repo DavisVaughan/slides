@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Importing data</title>
+    <meta charset="utf-8">
+    <link href="libs/remark-css/example.css" rel="stylesheet" />
+    <link rel="stylesheet" href="custom.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Importing data
+
+---
+
+
+class: dv
+
+# Importing data into R
+
+* Tons of ways to import data into R
+
+--
+
+* Data is read in as _data frames_
+
+--
+
+* We will focus on:
+
+  * `readr`
+  
+  * `readxl` and `openxlsx`
+  
+* We won't talk about:
+
+  * `DBI` and `odbc` - Database connections
+
+---
+
+class: dv
+
+# readr
+
+* Reading in "flat" files
+
+  * txt, csv, delimited
+
+* Can also write these back out
+
+---
+
+class: dv
+
+# readr - Read a CSV file
+
+
+```r
+library(readr)
+
+# Simple - Reading in a CSV
+fictrad_csv &lt;- read_csv(file = "data/example-fictrad.csv")
+
+head(fictrad_csv, 4)
+```
+
+```
+## # A tibble: 4 x 9
+##   `//ALFA_PLANCODE` ALFA_IssueAge ALFA_Sex ALFA_IssueYear IssueMonth
+##               &lt;chr&gt;         &lt;int&gt;    &lt;chr&gt;          &lt;dbl&gt;      &lt;int&gt;
+## 1             10T14            18        M           2015          8
+## 2             10T14            18        M           2015          7
+## 3             10T14            20        M           2015          2
+## 4             10T14            22        M           2015          1
+## # ... with 4 more variables: ALFA_SmokingClass &lt;chr&gt;,
+## #   InitPremInforce &lt;dbl&gt;, InitStatRes &lt;dbl&gt;, InitTaxRes &lt;dbl&gt;
+```
+
+---
+
+class: dv
+
+# readr - Read a delimited file
+
+
+```r
+library(readr)
+
+# '#' as delimited
+fictrad_delim &lt;- read_delim(file  = "data/example-fictrad.txt",
+*                           delim = "#")
+
+head(fictrad_delim, 4)
+```
+
+```
+## # A tibble: 4 x 9
+##   `//ALFA_PLANCODE` ALFA_IssueAge ALFA_Sex ALFA_IssueYear IssueMonth
+##               &lt;chr&gt;         &lt;int&gt;    &lt;chr&gt;          &lt;dbl&gt;      &lt;int&gt;
+## 1             10T14            18        M           2015          8
+## 2             10T14            18        M           2015          7
+## 3             10T14            20        M           2015          2
+## 4             10T14            22        M           2015          1
+## # ... with 4 more variables: ALFA_SmokingClass &lt;chr&gt;,
+## #   InitPremInforce &lt;dbl&gt;, InitStatRes &lt;dbl&gt;, InitTaxRes &lt;dbl&gt;
+```
+
+---
+
+class: dv
+
+# readr - Write a CSV
+
+
+
+
+
+```r
+head(mtcars, 2)
+```
+
+```
+## # A tibble: 2 x 12
+##           model   mpg   cyl  disp    hp  drat    wt  qsec    vs    am
+##           &lt;chr&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;int&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;dbl&gt; &lt;int&gt; &lt;int&gt;
+## 1     Mazda RX4    21     6   160   110   3.9 2.620 16.46     0     1
+## 2 Mazda RX4 Wag    21     6   160   110   3.9 2.875 17.02     0     1
+## # ... with 2 more variables: gear &lt;int&gt;, carb &lt;int&gt;
+```
+
+
+```r
+write_csv(x    = mtcars, 
+          path = "data/example-mtcars.csv")
+```
+
+---
+
+class: dv
+
+# readxl / openxlsx
+
+* `readxl` - Reading Excel files (xlsx and xls)
+
+* `openxlsx` - Writing Excel files (xlsx)
+
+---
+
+class: dv
+
+# readxl - Simple sheet
+
+![](./img/fictrad-easy.png)
+
+---
+
+class: dv
+
+# readxl - Simple sheet
+
+
+```r
+library(readxl)
+
+fictrad_xl &lt;- read_excel(path  = "data/example-fictrad.xlsx",
+                         sheet = "fictrad-easy")
+
+head(fictrad_xl, 1)
+```
+
+```
+## # A tibble: 1 x 9
+##   `//ALFA_PLANCODE` ALFA_IssueAge ALFA_Sex ALFA_IssueYear IssueMonth
+##               &lt;chr&gt;         &lt;dbl&gt;    &lt;chr&gt;          &lt;dbl&gt;      &lt;dbl&gt;
+## 1             10T14            18        M           2015          8
+## # ... with 4 more variables: ALFA_SmokingClass &lt;chr&gt;,
+## #   InitPremInforce &lt;dbl&gt;, InitStatRes &lt;dbl&gt;, InitTaxRes &lt;dbl&gt;
+```
+
+---
+
+class: dv
+
+# readxl - More difficult
+
+![](./img/fictrad-seriously-dude.png)
+
+---
+
+class: dv
+
+# readxl - More difficult
+
+
+```r
+library(readxl)
+
+fictrad_hard &lt;- read_excel(path  = "data/example-fictrad.xlsx",
+                           sheet = "fictrad-seriously-dude")
+
+head(fictrad_hard, 1)
+```
+
+```
+## # A tibble: 1 x 20
+##    X__1  X__2  X__3  X__4  X__5  X__6  X__7  X__8  X__9 X__10 X__11
+##   &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;chr&gt; &lt;lgl&gt; &lt;lgl&gt;
+## 1  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;  &lt;NA&gt;    NA    NA
+## # ... with 9 more variables: `//ALFA_PLANCODE` &lt;chr&gt;, ALFA_IssueAge &lt;dbl&gt;,
+## #   ALFA_Sex &lt;chr&gt;, ALFA_IssueYear &lt;dbl&gt;, IssueMonth &lt;dbl&gt;,
+## #   ALFA_SmokingClass &lt;chr&gt;, InitPremInforce &lt;dbl&gt;, InitStatRes &lt;dbl&gt;,
+## #   InitTaxRes &lt;dbl&gt;
+```
+
+---
+
+class: dv
+
+# readxl - More difficult
+
+
+```r
+library(readxl)
+# Include a range argument
+fictrad_hard_1 &lt;- read_excel(path  = "data/example-fictrad.xlsx",
+                             sheet = "fictrad-seriously-dude",
+*                            range = "D15:L35")
+
+fictrad_hard_2 &lt;- read_excel(path  = "data/example-fictrad.xlsx",
+                             sheet = "fictrad-seriously-dude",
+*                            range = "O13:W33")
+
+glimpse(fictrad_hard_1) 
+```
+
+```
+## Observations: 20
+## Variables: 9
+## $ //ALFA_PLANCODE   &lt;chr&gt; "10T14", "10T14", "10T14", "10T14", "10T14",...
+## $ ALFA_IssueAge     &lt;dbl&gt; 18, 18, 20, 22, 23, 24, 25, 25, 25, 25, 26, ...
+## $ ALFA_Sex          &lt;chr&gt; "M", "M", "M", "M", "F", "M", "M", "M", "M",...
+## $ ALFA_IssueYear    &lt;dbl&gt; 2015, 2015, 2015, 2015, 2015, 2015, 2015, 20...
+## $ IssueMonth        &lt;dbl&gt; 8, 7, 2, 1, 7, 3, 2, 6, 1, 3, 9, 4, 8, 3, 8,...
+## $ ALFA_SmokingClass &lt;chr&gt; "P", "U", "N", "N", "U", "U", "N", "N", "N",...
+## $ InitPremInforce   &lt;dbl&gt; 8840.00, 231.00, 339.55, 1815.00, 155.00, 17...
+## $ InitStatRes       &lt;dbl&gt; 54607.93, 79.40, 290.05, 2221.96, 18.20, 161...
+## $ InitTaxRes        &lt;dbl&gt; 5509.52, 0.00, 31.27, 2221.96, 18.20, 0.83, ...
+```
+
+---
+
+class: dv
+
+# openxlsx - Writing Excel files
+
+
+```r
+library(openxlsx)
+
+# Using mtcars again
+
+# Create a blank Excel workbook
+wb &lt;- createWorkbook()
+
+# Add a worksheet named cars_sheet
+addWorksheet(wb, sheetName = "cars_sheet")
+
+# Add the mtcars dataset to the sheet
+writeData(wb, sheet = "cars_sheet", x = mtcars)
+
+# Save and close the workbook
+saveWorkbook(wb, file = "data/example-mtcars.xlsx")
+```
+
+---
+
+class: dv
+
+# openxlsx - Writing Excel files
+
+![](./img/example-mtcars.png)
+
+---
+
+class: dv, middle, center
+
+# Next up..
+
+[Manipulation](./4-manipulation.html)
+    </textarea>
+<script src="libs/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {window.dispatchEvent(new Event('resize'));});</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+});
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

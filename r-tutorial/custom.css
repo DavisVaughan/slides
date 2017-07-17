@@ -16,6 +16,7 @@ a, a > code {
 
 .remark-code, .remark-inline-code {
   text-shadow: 0 0 0px #333;
+  padding: 0;
 }
 
 pre code {
@@ -24,4 +25,25 @@ pre code {
   -webkit-border-radius: 10px;
   -khtml-border-radius: 10px;
   border-radius: 10px;
+}
+
+.remark-slide-content {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.remark-slide-content > h1:first-of-type {
+  margin-left: 25px;
+}
+
+.remark-slide-content > h3 {
+  margin-left: 25px;
+}
+
+.remark-code-line-highlighted {
+  background-color: lightblue;
+}
+
+.pagedtable .even {
+    background-color: #2C3E50;
 }

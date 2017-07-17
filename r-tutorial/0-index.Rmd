@@ -7,12 +7,10 @@ output: html_document
 
 2) [R Basics](2-r-basics.html)
 
-3) Import
+3) [Import](3-import.html)
 
-4) Manipulation
+4) [Manipulation](4-manipulation.html)
 
 5) Visualize
 
 6) Model
-
-7) Put it together

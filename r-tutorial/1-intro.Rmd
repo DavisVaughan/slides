@@ -1,6 +1,5 @@
 ---
 title: "Your first R analysis"
-author: "Davis Vaughan"
 output:
   xaringan::moon_reader:
     css: ["default", "custom.css"]
@@ -175,7 +174,7 @@ ggplot(rates_growth, aes(x = month, y = fund_value, linetype = growth)) +
        subtitle = "Varying by Scenario", 
        linetype = "Legend")
 
-ggsave("img/ggplot_growth.png", height = 8, width = 7)
+ggsave("img/ggplot_growth.png", height = 8, width = 7.5)
 
 rates_growth %>% 
   filter(growth == "EAFE") %>%
