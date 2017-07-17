@@ -1,0 +1,18 @@
+---
+title: "Index"
+output: html_document
+---
+
+1) [Intro](1-intro.html)
+
+2) [R Basics](2-r-basics.html)
+
+3) Import
+
+4) Manipulation
+
+5) Visualize
+
+6) Model
+
+7) Put it together

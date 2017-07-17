@@ -128,16 +128,18 @@ class: dv
   - Faceting - One graph per line
   
   - One graph with multiple lines
-  
+
 - Interactive ggplot graphs
 
   - `plotly` and `ggplotly`
 
 ]
 
+--
+
 .pull-right[
 
-![](./img/ggplot_growth.pdf)
+![](./img/ggplot_growth.png)
 
 ]
 
@@ -173,7 +175,7 @@ ggplot(rates_growth, aes(x = month, y = fund_value, linetype = growth)) +
        subtitle = "Varying by Scenario", 
        linetype = "Legend")
 
-ggsave("img/ggplot_growth.pdf")
+ggsave("img/ggplot_growth.png", height = 8, width = 7)
 
 rates_growth %>% 
   filter(growth == "EAFE") %>%
@@ -181,5 +183,39 @@ rates_growth %>%
   geom_line()
 ```
 
+---
 
+class: dv
+
+# Model
+
+* R comes with a number of statistical tools
+  
+  * `lm()` - Linear Regression
+  
+  * `glm()` - General Linear Model 
+    
+      * Logistic regression, Poisson, Gamma
+  
+--
+  
+* Packages provide more advanced tools
+
+  * `ranger` - Random forests
+  
+  * `caret` - Tools to streamline the modeling process
+  
+
+---
+
+class: dv, center, middle
+
+# Let's get into it
+
+[Basics](./2-r-basics.html)
+  
+  
+  
+  
+  
 

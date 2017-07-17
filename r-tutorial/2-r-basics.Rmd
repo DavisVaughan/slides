@@ -1,0 +1,23 @@
+---
+title: "R Basics"
+author: "Davis Vaughan"
+output:
+  html_document:
+    self_contained: false
+---
+
+```{r, include=FALSE}
+tutorial::go_interactive()
+```
+
+# Variables
+
+* A way to store data in R
+
+* Created using the _assignment operator_ `<-`
+
+
+```{r}
+x <- 5
+```
+
