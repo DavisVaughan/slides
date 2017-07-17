@@ -141,7 +141,7 @@ class: dv
 
 ]
 
-```{r, include=FALSE}
+```{r, include=FALSE, eval=FALSE}
 library(ggplot2)
 library(readr)
 library(readxl)
