@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Your first R analysis</title>
+    <meta charset="utf-8">
+    <meta name="author" content="Davis Vaughan" />
+    <link href="libs/remark-css/example.css" rel="stylesheet" />
+    <link rel="stylesheet" href="custom.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Your first R analysis
+### Davis Vaughan
+
+---
+
+
+
+
+class: dv
+ 
+# What's on the agenda?
+
+--
+
+### Learning R!
+
+--
+
+.pull-left[
+
+- Import
+
+- Manipulate
+
+]
+
+.pull-right[
+
+- Visualize
+
+- Model
+
+]
+
+---
+
+class: dv
+
+# Import
+
+--
+
+- Text / CSV files
+  
+  - `readr` 
+  
+  - Tab, comma, space delimited
+
+--
+
+- Excel
+  
+  - `readxl`
+
+  - Multiple sheets
+  
+  - xls or xlsx
+
+--
+
+- Access databases
+
+  - `DBI` and `odbc`
+
+---
+
+class: dv
+
+# Manipulate 
+
+--
+
+- Wrangle your data
+
+  - `filter` for specific rows
+  
+  - `mutate` data sets to add or alter columns
+  
+  - `select` certain columns to work with
+
+--
+  
+- Whatever this thing is
+    
+  - `%&gt;%`
+      
+  - Hint: it's called a pipe - _Chaining_ operations
+
+--
+
+- Joining tables together
+
+  - `left_join`, and `right_join`, and `anti_join`, oh my!
+  
+- Summary statistics
+
+  - `group_by` - separate your dataset into distinct groups
+  
+  - `summarize` - calculate a 1 number summary for each group (mean)
+  
+---
+
+class: dv
+
+# Visualize
+
+.pull-left[
+
+- `ggplot2`
+
+  - Scatter plots
+  
+  - Line graphs
+   
+- Multiple lines
+
+  - Faceting - One graph per line
+  
+  - One graph with multiple lines
+  
+- Interactive ggplot graphs
+
+  - `plotly` and `ggplotly`
+
+]
+
+.pull-right[
+
+![](./img/ggplot_growth.pdf)
+
+]
+    </textarea>
+<script src="libs/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {window.dispatchEvent(new Event('resize'));});</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+});
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
