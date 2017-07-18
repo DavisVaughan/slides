@@ -13,7 +13,7 @@ output:
 
 class: dv
 
-# Manipulation using dplyr and tidyr
+# Manipulation using dplyr and tidyr 
 
 * Three main things to talk about
 
