@@ -209,4 +209,68 @@ class: dv
 rmarkdown:::print.paged_df(flights_cat)
 ```
 
+---
+
+class: dv
+
+# group_by() and summarize()
+
+* Often, data sets are grouped and aggregated to get a coarser level of insights
+
+* Think _pivot tables_ from Excel
+
+* In R, these manipulations are accomplished using _grouped data frames_.
+
+---
+
+class: dv
+
+# group_by() and summarize()
+
+* For `flights`, what if we wanted the average `distance` for each `month`?
+
+```{r}
+flights %>%
+  
+  # Group rows by year 2013, 2014, ...
+  group_by(month) %>%
+  
+  # For each group, calculate the average distance
+  summarize(avg_distance = mean(distance)) %>%
+  
+  print(n = 12)
+```
+
+
+---
+
+class: dv
+
+# Tidy data
+
+* There are three interrelated rules which make a dataset tidy:
+
+      1. Each _variable_ must have its own _column_.
+
+      2. Each _observation_ must have its own _row_.
+  
+      3. Each _value_ must have its own _cell_.
+    
+![](./img/tidy.png)
+
+* Tidy data makes your analysis steps feel natural
+
+---
+
+class: dv
+
+# Tidy VS Untidy examples
+
+```{r}
+library(readxl)
+de <- read_excel(path = "data/example_de.xlsx")
+
+de
+```
+
 
