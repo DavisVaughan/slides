@@ -231,16 +231,19 @@ class: dv
 
 ```{r}
 flights %>%
-  
-  # Group rows by year 2013, 2014, ...
-  group_by(month) %>%
-  
-  # For each group, calculate the average distance
-  summarize(avg_distance = mean(distance)) %>%
-  
-  print(n = 12)
+  group_by(month) %>%                      # Group rows by month 1, 2, ..., 12
+  summarize(avg_distance = mean(distance), # For each group, avg distance
+            sd_distance  = sd(distance))   # For each group, sd distance
 ```
 
+
+---
+
+class: dv
+
+# group_by() and summarize()
+
+![](./img/group_by.png)
 
 ---
 
@@ -264,13 +267,33 @@ class: dv
 
 class: dv
 
-# Tidy VS Untidy examples
+# Tidy VS Untidy example
 
 ```{r}
 library(readxl)
 de <- read_excel(path = "data/example_de.xlsx")
 
-de
+head(de)
 ```
 
+* Not tidy! Think about performing a `group_by` to get the average de for each product. Can't group on columns!
+
+---
+
+class: dv
+
+# Tidying up - gather() and spread()
+
+![](./img/gather.png)
+
+---
+
+class: dv
+
+# Tidying up - gather() and spread()
+
+```{r}
+de %>% 
+  gather(key = product, value = de, -scenario, -year)
+```
 

@@ -19,7 +19,7 @@ class: center, middle, inverse, title-slide
 
 class: dv
 
-# Manipulation using dplyr and tidyr
+# Manipulation using dplyr and tidyr 
 
 * Three main things to talk about
 
@@ -305,34 +305,37 @@ class: dv
 
 ```r
 flights %&gt;%
-  
-  # Group rows by year 2013, 2014, ...
-  group_by(month) %&gt;%
-  
-  # For each group, calculate the average distance
-  summarize(avg_distance = mean(distance)) %&gt;%
-  
-  print(n = 12)
+  group_by(month) %&gt;%                      # Group rows by month 1, 2, ..., 12
+  summarize(avg_distance = mean(distance), # For each group, avg distance
+            sd_distance  = sd(distance))   # For each group, sd distance
 ```
 
 ```
-## # A tibble: 12 x 2
-##    month avg_distance
-##    &lt;int&gt;        &lt;dbl&gt;
-##  1     1     1014.221
-##  2     2     1007.523
-##  3     3     1023.296
-##  4     4     1047.726
-##  5     5     1048.667
-##  6     6     1073.316
-##  7     7     1070.379
-##  8     8     1069.759
-##  9     9     1048.707
-## 10    10     1041.916
-## 11    11     1053.247
-## 12    12     1076.755
+## # A tibble: 12 x 3
+##    month avg_distance sd_distance
+##    &lt;int&gt;        &lt;dbl&gt;       &lt;dbl&gt;
+##  1     1     1014.221    721.8597
+##  2     2     1007.523    712.4479
+##  3     3     1023.296    707.6300
+##  4     4     1047.726    728.4061
+##  5     5     1048.667    745.4528
+##  6     6     1073.316    753.7085
+##  7     7     1070.379    751.1534
+##  8     8     1069.759    753.1015
+##  9     9     1048.707    748.0776
+## 10    10     1041.916    736.3686
+## 11    11     1053.247    731.4028
+## 12    12     1076.755    731.0752
 ```
 
+
+---
+
+class: dv
+
+# group_by() and summarize()
+
+![](./img/group_by.png)
 
 ---
 
@@ -356,37 +359,44 @@ class: dv
 
 class: dv
 
-# Tidy VS Untidy examples
+# Tidy VS Untidy example
 
 
 ```r
 library(readxl)
 de &lt;- read_excel(path = "data/example_de.xlsx")
 
-de
+head(de)
 ```
 
 ```
-## # A tibble: 15 x 6
-##    scenario  year IM_Fixed_Annuity IM_Variable_Annuity RPS_Fixed_Annuity
-##       &lt;dbl&gt; &lt;dbl&gt;            &lt;dbl&gt;               &lt;dbl&gt;             &lt;dbl&gt;
-##  1        1     1         181893.9            685179.8          35324.75
-##  2        1     2         145249.0            530600.0          37843.00
-##  3        1     3         167350.3            594621.8         113321.81
-##  4        1     4         129080.0            490597.3         104969.93
-##  5        1     5         155391.4            700953.3         110358.50
-##  6        2     1         255595.0            704294.8          87184.27
-##  7        2     2         216497.4            704984.5          96245.15
-##  8        2     3         180066.7            679097.1         106180.74
-##  9        2     4         110949.7            613020.8         108671.69
-## 10        2     5         158623.1            535985.6         114328.30
-## 11        3     1         256347.5            761614.9          89361.60
-## 12        3     2         224788.5            619214.4         100486.19
-## 13        3     3         134470.0            497682.2          82724.03
-## 14        3     4         120489.9            305139.6         116522.18
-## 15        3     5         151506.0            285710.1         118306.86
+## # A tibble: 6 x 6
+##   scenario  year IM_Fixed_Annuity IM_Variable_Annuity RPS_Fixed_Annuity
+##      &lt;dbl&gt; &lt;dbl&gt;            &lt;dbl&gt;               &lt;dbl&gt;             &lt;dbl&gt;
+## 1        1     1         181893.9            685179.8          35324.75
+## 2        1     2         145249.0            530600.0          37843.00
+## 3        1     3         167350.3            594621.8         113321.81
+## 4        1     4         129080.0            490597.3         104969.93
+## 5        1     5         155391.4            700953.3         110358.50
+## 6        2     1         255595.0            704294.8          87184.27
 ## # ... with 1 more variables: RPS_Variable_Annuity &lt;dbl&gt;
 ```
+
+* Not tidy! Think about performing a `group_by` to get the average de for each product. Can't group on columns!
+
+---
+
+class: dv
+
+# Tidying up - gather() and spread()
+
+![](./img/gather.png)
+
+---
+
+class: dv
+
+# Tidying up - gather() and spread()
     </textarea>
 <script src="libs/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({
