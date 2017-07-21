@@ -1,0 +1,125 @@
+---
+title: "Database manipulation"
+output:
+  html_document:
+    highlight: tango
+    df_print: paged
+---
+
+### Required packages
+
+```{r, message = FALSE}
+library(DBI)
+library(dbplyr)
+library(tidyverse)
+```
+
+### Connect to the database
+
+```{r, warning=FALSE}
+cn <- dbConnect(drv = odbc::odbc(), 
+                dsn = "fictrad")
+
+dbListTables(cn) %>% tail(6)
+```
+
+### Let's check out the 1q16 table
+
+```{sql connection=cn}
+SELECT `//ALFA_PLANCODE`, ALFA_IssueAge, ALFA_IssueYear, ALFA_Sex, ALFA_SmokingClass, InitStatRes
+FROM `1q16`
+Order by `//ALFA_PLANCODE`
+```
+
+### What about 3q16?
+
+```{sql connection=cn}
+SELECT `//ALFA_PLANCODE`, ALFA_IssueAge, ALFA_IssueYear, ALFA_Sex, ALFA_SmokingClass, InitStatRes
+FROM `3q16`
+Order by `//ALFA_PLANCODE`
+```
+
+---
+
+## Formulate a question!
+
+### _How did the Average Initial Statuatory Reserve change from 1q16 to 3q16?_
+
+#### What if we break it down by `//ALFA_PLANCODE`, and by `ALFA_Sex`, and take the average `InitStatRes`.
+
+---
+
+
+### Adding a column of just "1q16"
+
+```{r}
+# Connect to the 1q16 table
+tbl_1q16 <- tbl(cn, "1q16")
+
+# Add a quarter column, then select just the columns we are interested in for the question
+tbl_1q16 <- tbl_1q16 %>%
+  mutate(quarter = "1q16") %>%
+  select(`//ALFA_PLANCODE`, ALFA_Sex, quarter, InitStatRes)
+  
+tbl_1q16
+```
+
+### Adding a column of just "3q16"
+
+```{r}
+# Connect to the 3q16 table
+tbl_3q16 <- tbl(cn, "3q16")
+
+# Add a quarter column, then select just the columns we are interested in for the question
+tbl_3q16 <- tbl_3q16 %>%
+  mutate(quarter = "3q16") %>%
+  select(`//ALFA_PLANCODE`, ALFA_Sex, quarter, InitStatRes)
+
+tbl_3q16
+```
+
+### SQL is doing the hard work!
+
+```{r}
+tbl_1q16 %>% show_query()
+```
+
+
+
+### Actually pull them down from the database
+
+```{r}
+start_time <- proc.time()
+
+tbl_1q16 <- collect(tbl_1q16)
+tbl_3q16 <- collect(tbl_3q16)
+
+proc.time() - start_time
+```
+
+### Stack the two datasets together. How large is this??
+
+```{r}
+joined_tbl <- bind_rows(tbl_1q16, tbl_3q16)
+
+dim(joined_tbl)
+```
+
+### Average Statuatory Reserve from 1q16 -> 3q16
+
+#### Broken down by plancode and sex 
+
+```{r}
+joined_tbl %>%
+  
+  # Grouping by plancode, sex, and quarter
+  group_by(`//ALFA_PLANCODE`, ALFA_Sex, quarter) %>%
+  
+  # For each group, calculate the average stat reserve
+  summarise(avg_stat_reserve = mean(InitStatRes)) %>%
+  
+  # Spread it out by quarter so you can compare the two
+  spread(key = quarter, value = avg_stat_reserve)
+```
+
+
