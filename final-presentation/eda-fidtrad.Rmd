@@ -6,9 +6,7 @@ output:
     df_print: paged
 ---
 
-### Required packages
-
-```{r, message = FALSE}
+```{r, message = FALSE, include = FALSE}
 library(DBI)
 library(dbplyr)
 library(tidyverse)
@@ -17,26 +15,30 @@ library(tidyverse)
 ### Connect to the database
 
 ```{r, warning=FALSE}
+# Connect to database
 cn <- dbConnect(drv = odbc::odbc(), 
                 dsn = "fictrad")
 
+# Last 6 tables
 dbListTables(cn) %>% tail(6)
 ```
 
 ### Let's check out the 1q16 table
 
-```{sql connection=cn}
-SELECT `//ALFA_PLANCODE`, ALFA_IssueAge, ALFA_IssueYear, ALFA_Sex, ALFA_SmokingClass, InitStatRes
-FROM `1q16`
-Order by `//ALFA_PLANCODE`
+```{r}
+# Connect to the 1q16 table
+tbl_1q16 <- tbl(cn, "1q16")
+
+tbl_1q16
 ```
 
 ### What about 3q16?
 
-```{sql connection=cn}
-SELECT `//ALFA_PLANCODE`, ALFA_IssueAge, ALFA_IssueYear, ALFA_Sex, ALFA_SmokingClass, InitStatRes
-FROM `3q16`
-Order by `//ALFA_PLANCODE`
+```{r}
+# Connect to the 3q16 table
+tbl_3q16 <- tbl(cn, "3q16")
+
+tbl_3q16
 ```
 
 ---
@@ -53,12 +55,12 @@ Order by `//ALFA_PLANCODE`
 ### Adding a column of just "1q16"
 
 ```{r}
-# Connect to the 1q16 table
-tbl_1q16 <- tbl(cn, "1q16")
-
-# Add a quarter column, then select just the columns we are interested in for the question
 tbl_1q16 <- tbl_1q16 %>%
+  
+  # Add a quarter column
   mutate(quarter = "1q16") %>%
+  
+  # Only columns we are interested in for the question
   select(`//ALFA_PLANCODE`, ALFA_Sex, quarter, InitStatRes)
   
 tbl_1q16
@@ -67,12 +69,12 @@ tbl_1q16
 ### Adding a column of just "3q16"
 
 ```{r}
-# Connect to the 3q16 table
-tbl_3q16 <- tbl(cn, "3q16")
-
-# Add a quarter column, then select just the columns we are interested in for the question
 tbl_3q16 <- tbl_3q16 %>%
+  
+  # Add a quarter column
   mutate(quarter = "3q16") %>%
+  
+  # Only columns we are interested in for the question
   select(`//ALFA_PLANCODE`, ALFA_Sex, quarter, InitStatRes)
 
 tbl_3q16
@@ -84,13 +86,12 @@ tbl_3q16
 tbl_1q16 %>% show_query()
 ```
 
-
-
 ### Actually pull them down from the database
 
 ```{r}
 start_time <- proc.time()
 
+# "Collect" the datasets from the database
 tbl_1q16 <- collect(tbl_1q16)
 tbl_3q16 <- collect(tbl_3q16)
 
@@ -100,8 +101,10 @@ proc.time() - start_time
 ### Stack the two datasets together. How large is this??
 
 ```{r}
+# Bind the datasets together by rows
 joined_tbl <- bind_rows(tbl_1q16, tbl_3q16)
 
+# Dimensions
 dim(joined_tbl)
 ```
 
