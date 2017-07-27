@@ -16,54 +16,66 @@ output:
 
 ---
 
-```{r, message = FALSE, include = FALSE}
+```{r echo=FALSE, message=FALSE, warning = FALSE}
 library(DBI)
 library(dbplyr)
 library(tidyverse)
-```
 
-### Connect to the database, and the tables required
-
-```{r, warning=FALSE}
-# Connect to database
-cn <- dbConnect(drv = odbc::odbc(), dsn = "fictrad")
-
-# Connect to the 1q16 table
+# Show the table
+cn <- dbConnect(drv = odbc::odbc(), dsn = "fictrad_ail")
 tbl_1q16 <- tbl(cn, "1q16")
-
-# Connect to the 3q16 table
-tbl_3q16 <- tbl(cn, "3q16")
-
-# What does this look like?
 tbl_1q16
 ```
 
-### Pull those tables into R and join them together
+### Doing 4 things
 
-```{r}
+* Connect to the database / specific tables
+
+* Add a new column to differentiate 1q16 from 3q16
+
+* Select 4 relevant columns for our question
+
+* Join the tables together and pull them into R
+ 
+---
+
+```{r, warning = FALSE}
 start_time <- proc.time()
 
-# Add a new column, then select the 4 columns that interest us
-tbl_1q16 <- tbl_1q16 %>%
-  mutate(quarter = "1q16") %>%                             
-  select(`//ALFA_PLANCODE`, ALFA_Sex, quarter, InitStatRes) 
-  
-# Add a new column, then select the 4 columns that interest us
-tbl_3q16 <- tbl_3q16 %>%
-  mutate(quarter = "3q16") %>%                              
-  select(`//ALFA_PLANCODE`, ALFA_Sex, quarter, InitStatRes)
+# Connect to database
+cn <- dbConnect(drv = odbc::odbc(), dsn = "fictrad_ail")
 
-# Combine the two datasets
-joined_data <- bind_rows(collect(tbl_1q16),
-                         collect(tbl_3q16))
+# Connect to the 1q16 and 3q16 tables
+tbl_1q16 <- tbl(cn, "1q16")
+tbl_3q16 <- tbl(cn, "3q16")
+
+# Manipulate and join them
+joined_data <- list(tbl_1q16, tbl_3q16) %>%
+  
+  map2(c("1q16", "3q16"), 
+       
+         # For each table...
+       ~ .x %>%
+         
+         # Add a new column
+         mutate(quarter = .y) %>%
+         
+         # Select relevant rows
+         select(`//ALFA_PLANCODE`, ALFA_Sex, quarter, InitStatRes) %>%
+         
+         # Collect results from the database
+         collect()) %>%
+  
+  # Join the two results 
+  bind_rows()
 
 proc.time() - start_time
 ```
 
 ### But how much data was this?
 
-```{r}
-dim(joined_data)
+```{r, echo = FALSE}
+c(rows = dim(joined_data)[1], columns = dim(joined_data)[2])
 
 joined_data
 ```
