@@ -60,7 +60,7 @@ joined_data <- list(tbl_1q16, tbl_3q16) %>%
          # Add a new column
          mutate(quarter = .y) %>%
          
-         # Select relevant rows
+         # Select relevant columns
          select(`//ALFA_PLANCODE`, ALFA_Sex, quarter, InitStatRes) %>%
          
          # Collect results from the database
