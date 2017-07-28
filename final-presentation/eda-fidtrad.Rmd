@@ -72,6 +72,7 @@ joined_data <- list(tbl_1q16, tbl_3q16) %>%
 proc.time() - start_time
 ```
 
+
 ### But how much data was this?
 
 ```{r, echo = FALSE}
