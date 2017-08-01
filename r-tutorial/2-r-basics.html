@@ -17,6 +17,65 @@ class: center, middle, inverse, title-slide
 
 class: dv
 
+# R and RStudio
+
+* Installing R 
+
+  * Instructions sent out with the meeting invite
+
+* RStudio 
+ 
+  * "Integrated Development Environment" 
+
+
+---
+
+class: dv
+
+# R and RStudio
+
+.center[
+![](img/rstudio-ide.png)
+]
+
+---
+
+class: dv
+
+# Installing packages
+
+* "An R package is a collection of functions, data, and documentation that extends the capabilities of base R."
+
+*  _Install_ packages once, then _library_ them whenever you want access to their functions.
+
+--
+
+* A few packages required for the talk
+
+
+```r
+# A collection of useful packages (ggplot2, dplyr, tidyr, ...)
+install.packages("tidyverse")
+
+# A dataset about flights
+install.packages("nycflights13")
+```
+
+--
+
+* Load the packages with `library()`
+
+
+```r
+library(tidyverse)
+library(nycflights13)
+```
+
+
+---
+
+class: dv
+
 # Variables
 
 * A way to store data in R
@@ -78,118 +137,36 @@ x + 2
 
 class: dv
 
-# Data types
+# Functions
 
-* There are different types of data in R
+* A piece of R code that should do 1 thing well
 
-  * Numeric, Character (string), Boolean (True / False), Dates, etc
-  
-  * The "type" is also known as the "class" of data
-  
---
+* Should have a descriptive name
 
-.pull-left[
+* Takes _input_, returns a consistent _output_
 
-
-```r
-# A numeric
-my_number &lt;- 10000
-class(my_number)
-```
-
-```
-## [1] "numeric"
-```
-
-]
+* Black box to the user (but not really)
 
 --
 
-.pull-right[
+
+
 
 
 ```r
-# A character
-# Notice the quotes
-my_char &lt;- "Hello!"
-class(my_char)
+x &lt;- 5
+
+add_one(x)
 ```
 
 ```
-## [1] "character"
+## [1] 6
 ```
-
-```r
-my_char
-```
-
-```
-## [1] "Hello!"
-```
-
-]
-
----
-
-class: dv
-
-# Vectors
-
-* Think of a vector like a _column in Excel_
-
-  * Just a sequence of items / numbers
-  
-  * Each element in a vector is like a _cell in a column in Excel_
-  
-  * However, they can only hold 1 data type at a time (only numeric, only character)
 
 --
 
-.pull-left[
-
-
-```r
-# Vectors are created with
-# the function: c()
-policy_number &lt;- c(5, 7, 87, 1000)
-
-policy_number
-```
-
-```
-## [1]    5    7   87 1000
-```
-
-```r
-policy_number / 2 
-```
-
-```
-## [1]   2.5   3.5  43.5 500.0
-```
-
-]
-
---
-
-.pull-right[
-
-
-```r
-# You cannot mix 
-# characters and numerics
-# Numerics are forced as Character 
-mixed_vector &lt;- c("a string", 14)
-
-# Notice the quotes around "14" 
-mixed_vector 
-```
-
-```
-## [1] "a string" "14"
-```
-
-]
+* x = input
+* 6 = output
 
 ---
 
@@ -198,33 +175,48 @@ class: dv
 # Data frames / Tibbles
 
 .pull-left[
-
-* Why did I teach you all this so far?
-
-* Building up to _data frames_
-
+* Tables in Excel
 ]
-
---
 
 .pull-right[
-
-* _Tables in Excel_
-
-* Multiple columns, each column is a vector
-
+* The most familiar way to store data
 ]
+
+&lt;br&gt;
+
+
+```r
+flights
+```
+
+
+```
+## # A tibble: 6 x 7
+##    year month   day dep_time sched_dep_time carrier distance
+##   &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;   &lt;chr&gt;    &lt;dbl&gt;
+## 1  2013     1     1      517            515      UA     1400
+## 2  2013     1     1      533            529      UA     1416
+## 3  2013     1     1      542            540      AA     1089
+## 4  2013     1     1      544            545      B6     1576
+## 5  2013     1     1      554            600      DL      762
+## 6  2013     1     1      554            558      UA      719
+```
+
+---
+
+class: dv
+
+# Data frames / Tibbles
+
+* Building a tibble from scratch
 
 --
 
 
 ```r
-library(tibble)
-
 df &lt;- tibble(
   policy_name = c("Jason", "Danielle", "Andrew"),
-  premium     = c(    120,      250.4,      300)
-)
+  premium     = c(    120,      250.4,      300))
 
 df
 ```
@@ -240,7 +232,9 @@ df
 
 --
 
-.center[Data frames are the main way to hold data in R]
+&lt;br&gt;&lt;/br&gt;
+
+.center[Most often, you will import one from Excel]
 
 ---
 
@@ -248,25 +242,27 @@ class: dv
 
 # Quick summary
 
-* Variables - used to store data by name
+* Variables 
 
-* Vectors - multiple numbers / characters stored together
-
-  * For us, mainly: numeric, character, dates
+  * Used to store data by name
   
-  * Only one data type per vector
-  
-* Data frames 
+* Functions
 
-  * Holding multiple vectors together at once
+  * Does one thing well
+  
+  * Black box, just worry about input/output for now
+  
+* Tibbles
   
   * Like _tables in Excel_
+  
+  * Hold data in rectangular blocks
   
 ---
 
 class: dv, center, middle
 
-# Moving on... 
+# Next up.. 
 
 [Import](3-import.html)
     </textarea>

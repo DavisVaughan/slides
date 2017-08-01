@@ -27,7 +27,7 @@ class: dv
 
 class: dv
 
-# Data - nycflights13
+# Data - flights from nycflights13
   
 ```{r, echo = FALSE, message=FALSE}
 library(tidyverse)
@@ -38,6 +38,9 @@ flights <- flights %>%
   filter(!is.na(dep_time))
 ```
 
+```{r, eval=FALSE}
+flights
+```
   
 ```{r, echo=FALSE, message=FALSE}
 library(nycflights13)
@@ -53,11 +56,24 @@ class: dv
 
 # select() columns
 
-* Extract specific columns from your data frame
+<br>
+<br>
+
+![](img/select.png)
+
+
+---
+
+class: dv
+
+# select() columns
+
+* Extract specific columns
 
 ```{r}
+# Select year and carrier
 # Store in a new data frame
-yr_carrier <- select(.data = flights, year, carrier)
+yr_carrier <- select(flights, year, carrier)
 
 yr_carrier
 ```
@@ -82,18 +98,49 @@ class: dv
 
 .pull-right[
 
+![](img/pipeitup.jpg)
+
+]
+
+---
+
+class: dv
+
+# The pipe %>%
+
+.pull-left[
+
+* The _object_ to the left of the pipe becomes the _first argument_ of the function on the right
+
+![](./img/pipe.png)
+
+]
+
+.pull-right[
+
 ```{r}
 # Readability is the 
 # focus of the pipe!
 
 flights %>%
   select(dep_time) %>%
-  head(n = 4)
+  head(4)
 
-# head(select(flights, arr_time), 4)
+# head(select(flights, dep_time), 4)
 ```
 
 ]
+
+---
+
+class: dv
+
+# filter() for specific rows
+
+<br>
+<br>
+
+![](img/filter.png)
 
 ---
 
@@ -106,11 +153,29 @@ class: dv
 ```{r}
 AA <- filter(flights, carrier == "AA")
 head(AA, 2)
+```
 
+--
+
+```{r}
 # With pipes
 flights %>%
   filter(carrier == "AA") %>%
   head(2)
+```
+
+
+---
+
+class: dv
+
+# arrange() to order rows 
+
+* Order by distance? Lowest to highest? Vice versa?
+
+```{r}
+flights %>%
+  arrange(distance)
 ```
 
 ---
@@ -121,22 +186,29 @@ class: dv
 
 * Order by distance? Lowest to highest? Vice versa?
 
-```{r, include=FALSE}
-# only a few rows so it can fit
-options(tibble.print_min = 2)
-```
-
 ```{r}
 flights %>%
-  arrange(distance)
-
-flights %>%
-  arrange(desc(distance))
+  arrange(desc(distance)) # descending order
 ```
 
-```{r, include=FALSE}
-# change default back
-options(tibble.print_min = 10)
+---
+
+class: dv
+
+# A question
+
+* Can we categorize flights as:
+
+  * early
+  
+  * late 
+  
+  * really late
+
+* Can we quantify "late" and "really late"?
+
+```{r}
+flights
 ```
 
 ---
@@ -145,21 +217,23 @@ class: dv
 
 # mutate() to add new columns
 
-* The most important one so far!
+<br>
+<br>
+
+![](img/mutate.png)
+
+
+---
+
+class: dv
+
+# mutate() to add new columns
 
 ```{r}
 flights_late <- flights %>%
-  
-  mutate(
-    
-    # Time difference between actual and scheduled departure
-    late_time    = dep_time - sched_dep_time,
-         
-    # This flight was x% late
-    percent_late = late_time / sched_dep_time * 100) %>%
-  
-  # Relevant columns
-  select(dep_time, sched_dep_time, late_time, percent_late)
+  mutate(late_time = dep_time - sched_dep_time)
+
+flights_late
 ```
 
 ---
@@ -168,8 +242,15 @@ class: dv
 
 # mutate() to add new columns
 
-```{r, echo=FALSE}
-rmarkdown:::print.paged_df(flights_late)
+* Of the flights that are late, define the 75th percentile to be "really late"
+
+* How late is the 75th percentile?
+
+```{r}
+flights_late %>%
+  filter(late_time > 0) %>%  # Only look at late flights
+  pull(late_time) %>%        # Extract the late column
+  quantile()                 # The quantiles of the late flights
 ```
 
 ---
@@ -181,22 +262,17 @@ class: dv
 * Imagine doing this with Excel formulas - nested If/Or
 
 ```{r}
-flights_cat <- flights %>% 
-  
+flights_cat <- flights_late %>% 
   mutate(
-    
-    # This flight was x% late
-    percent_late  = (dep_time - sched_dep_time) / sched_dep_time * 100,
     
     # Separate the flights into 3 categories
     late_category = case_when(
-      percent_late <= 0  ~ "early",
-      percent_late < 50  ~ "late",
-      TRUE               ~ "really late")
-  ) %>%
+      late_time <= 0   ~ "early",
+      late_time <= 87  ~ "late",
+      TRUE             ~ "really late")) %>%
   
   # Only select relevant columns
-  select(dep_time, sched_dep_time, percent_late, late_category)
+  select(dep_time, sched_dep_time, late_time, late_category)
 ```
 
 ---
@@ -207,6 +283,8 @@ class: dv
 
 ```{r, echo = FALSE}
 rmarkdown:::print.paged_df(flights_cat)
+
+flights_cat %>% count(late_category)
 ```
 
 ---
@@ -221,6 +299,8 @@ class: dv
 
 * In R, these manipulations are accomplished using _grouped data frames_.
 
+![](img/group_summary.png)
+
 ---
 
 class: dv
@@ -229,13 +309,21 @@ class: dv
 
 * For `flights`, what if we wanted the average `distance` for each `month`?
 
-```{r}
-flights %>%
-  group_by(month) %>%                      # Group rows by month 1, 2, ..., 12
-  summarize(avg_distance = mean(distance), # For each group, avg distance
-            sd_distance  = sd(distance))   # For each group, sd distance
+```{r, include=FALSE}
+options(tibble.print_min = 12)
 ```
 
+
+```{r}
+flights_late %>%
+  group_by(month) %>%                      # Group rows by month 1, 2, ..., 12
+  summarize(avg_distance = mean(distance), # For each group, avg distance
+            avg_delay    = mean(late_time))
+```
+
+```{r, include=FALSE}
+options(tibble.print_min = 10)
+```
 
 ---
 
@@ -284,7 +372,10 @@ class: dv
 
 # Tidying up - gather() and spread()
 
+<br></br>
+
 ![](./img/gather.png)
+
 
 ---
 
@@ -292,8 +383,101 @@ class: dv
 
 # Tidying up - gather() and spread()
 
+* `gather()` multiple columns together
+
 ```{r}
 de %>% 
   gather(key = product, value = de, -scenario, -year)
 ```
+
+---
+
+class: dv
+
+# Tidying up - gather() and spread()
+
+* Why did I do that? Calculations are much easier to handle
+
+```{r}
+de %>% 
+  gather(key = product, value = de, -scenario, -year) %>%
+  group_by(product) %>%
+  summarise(`0th percentile`  = quantile(de, probs = 0),
+            `10th percentile` = quantile(de, probs = .1))
+```
+
+<br></br>
+
+* Also, visualizations are built around data being in this form
+
+---
+
+class: dv
+
+# Tidying up - gather() and spread() 
+
+* `spread()` is the complement to `gather()`
+
+![](img/spread.png)
+
+
+---
+
+class: dv
+
+# Tidying up - gather() and spread()
+
+* `spread()` is the complement to `gather()`
+
+```{r}
+gathered_de <- de %>% gather(key = product, value = de, -scenario, -year)
+
+gathered_de %>%
+  spread(key = product, value = de) %>%
+  head()
+```
+
+---
+
+class: dv
+
+# Wrap up
+
+* What is a tibble / data frame?
+
+* How to install a package?
+
+--
+
+* Basic visualization with ggplot2 
+
+  * Scatter plot
+  
+  * Line graph
+  
+  * Bar chart
+
+* Faceting
+
+--
+
+* Data manipulation
+
+  * mutate
+  
+  * group_by + summarize
+  
+  * gather + spread
+
+---
+
+class: dv
+
+# Thank you!
+
+* Help document with more R references
+
+* Stack Overflow + Google solve everything
+
+* I'm here until tomorrow
 

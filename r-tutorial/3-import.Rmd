@@ -11,15 +11,23 @@ output:
       countIncrementalSlides: false
 ---
 
+```{r, include=FALSE}
+options(tibble.print_min = 6)
+options(tibble.print_max = 6)
+#library(tidyverse)
+library(nycflights13)
+library(readxl)
+
+```
+
+
 class: dv
 
 # Importing data into R
 
-* Tons of ways to import data into R
-
 --
 
-* Data is read in as _data frames_
+* Data is read in as a _tibble_
 
 --
 
@@ -27,74 +35,99 @@ class: dv
 
   * `readr`
   
-  * `readxl` and `openxlsx`
+  * `readxl` / `openxlsx`
   
 * We won't talk about:
 
-  * `DBI` and `odbc` - Database connections
+  * `DBI` / `odbc` - Database connections
+  
+  * If interested, great docs here http://db.rstudio.com/
 
 ---
 
 class: dv
 
-# readr
+# Importing data into R
 
-* Reading in "flat" files
+* The first step for each example is always to library the tidyverse package
+
+* This libraries a number of packages, including `readr`
+
+```{r}
+library(tidyverse)
+
+tidyverse_packages()
+```
+
+
+---
+
+class: dv
+
+# readr - Read CSV
+
+* Reading and writing "flat" files
+
+  * txt, csv, delimited
+  
+.center[
+
+<br>
+
+
+![](img/fictrad-easy-csv.png)
+]
+
+---
+
+class: dv
+
+# readr - Read CSV
+
+* Reading and writing "flat" files
 
   * txt, csv, delimited
 
-* Can also write these back out
-
----
-
-class: dv
-
-# readr - Read a CSV file
-
 ```{r, message=FALSE}
-library(readr)
-
-# Simple - Reading in a CSV
+# Reading in a CSV
 fictrad_csv <- read_csv(file = "data/example-fictrad.csv")
 
-head(fictrad_csv, 4)
+fictrad_csv
 ```
 
 ---
 
 class: dv
 
-# readr - Read a delimited file
+# readr - Write CSV
 
-```{r, message=FALSE}
-library(readr)
+* Reading and writing "flat" files
 
-# '#' as delimited
-fictrad_delim <- read_delim(file  = "data/example-fictrad.txt",
-{{                           delim = "#"}})
-
-head(fictrad_delim, 4)
-```
-
----
-
-class: dv
-
-# readr - Write a CSV
-
-```{r, echo=FALSE, message=FALSE}
-mtcars <- read_csv(file = "data/example-mtcars.csv") 
-```
-
+  * txt, csv, delimited
 
 ```{r}
-head(mtcars, 2)
+airlines
 ```
 
 ```{r, eval=FALSE}
-write_csv(x    = mtcars, 
-          path = "data/example-mtcars.csv")
+write_csv(x    = airlines, 
+          path = "data/example-airlines.csv")
 ```
+
+---
+
+class: dv
+
+# readr - Write CSV
+
+* Reading and writing "flat" files
+
+  * txt, csv, delimited
+
+.center[
+![](img/airlines.PNG)
+]
+
 
 ---
 
@@ -106,12 +139,6 @@ class: dv
 
 * `openxlsx` - Writing Excel files (xlsx)
 
----
-
-class: dv
-
-# readxl - Simple sheet
-
 ![](./img/fictrad-easy.png)
 
 ---
@@ -121,12 +148,10 @@ class: dv
 # readxl - Simple sheet
 
 ```{r}
-library(readxl)
-
 fictrad_xl <- read_excel(path  = "data/example-fictrad.xlsx",
                          sheet = "fictrad-easy")
 
-head(fictrad_xl, 1)
+fictrad_xl
 ```
 
 ---
@@ -144,32 +169,16 @@ class: dv
 # readxl - More difficult
 
 ```{r}
-library(readxl)
-
-fictrad_hard <- read_excel(path  = "data/example-fictrad.xlsx",
-                           sheet = "fictrad-seriously-dude")
-
-head(fictrad_hard, 1)
-```
-
----
-
-class: dv
-
-# readxl - More difficult
-
-```{r}
-library(readxl)
 # Include a range argument
 fictrad_hard_1 <- read_excel(path  = "data/example-fictrad.xlsx",
-                             sheet = "fictrad-seriously-dude",
-{{                            range = "D15:L35"}})
+                             sheet = "fictrad-hard",
+{{                            range = "D5:L25"}})
 
 fictrad_hard_2 <- read_excel(path  = "data/example-fictrad.xlsx",
-                             sheet = "fictrad-seriously-dude",
-{{                            range = "O13:W33"}})
+                             sheet = "fictrad-hard",
+{{                            range = "O3:W23"}})
 
-glimpse(fictrad_hard_1) 
+fictrad_hard_1
 ```
 
 ---
@@ -177,32 +186,27 @@ glimpse(fictrad_hard_1)
 class: dv
 
 # openxlsx - Writing Excel files
+
+* Writing the `airlines` dataset to a completely new Excel file
 
 ```{r, eval = FALSE}
+# install.packages("openxlsx")
+
 library(openxlsx)
 
-# Using mtcars again
-
 # Create a blank Excel workbook
-wb <- createWorkbook()
+# Alternatively loadWorkbook()
+wb <- createWorkbook()          
 
-# Add a worksheet named cars_sheet
-addWorksheet(wb, sheetName = "cars_sheet")
+# Add a worksheet named airlines_sheet
+addWorksheet(wb, sheetName = "airlines_sheet")
 
-# Add the mtcars dataset to the sheet
-writeData(wb, sheet = "cars_sheet", x = mtcars)
+# Add the airlines dataset to the sheet
+writeData(wb, sheet = "airlines_sheet", x = airlines)
 
 # Save and close the workbook
-saveWorkbook(wb, file = "data/example-mtcars.xlsx")
+saveWorkbook(wb, file = "data/example-airlines.xlsx")
 ```
-
----
-
-class: dv
-
-# openxlsx - Writing Excel files
-
-![](./img/example-mtcars.png)
 
 ---
 
@@ -210,5 +214,5 @@ class: dv, middle, center
 
 # Next up..
 
-[Manipulation](./4-manipulation.html)
+[Visualization](./4-visualize.html)
 

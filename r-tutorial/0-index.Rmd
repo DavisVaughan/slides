@@ -9,8 +9,7 @@ output: html_document
 
 3) [Import](3-import.html)
 
-4) [Manipulation](4-manipulation.html)
+4) [Visualize](4-visualize.html)
 
-5) Visualize
+5) [Manipulation](5-manipulation.html)
 
-6) Model

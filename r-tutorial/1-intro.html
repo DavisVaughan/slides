@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Your first R analysis</title>
+    <title>The R Toolkit</title>
     <meta charset="utf-8">
     <link href="libs/remark-css/example.css" rel="stylesheet" />
     <link rel="stylesheet" href="custom.css" type="text/css" />
@@ -10,7 +10,7 @@
     <textarea id="source">
 class: center, middle, inverse, title-slide
 
-# Your first R analysis
+# The R Toolkit
 
 ---
 
@@ -23,15 +23,11 @@ class: dv
 
 --
 
-### Learning R!
-
---
-
 .pull-left[
 
-- Import
+- Basics
 
-- Manipulate
+- Import
 
 ]
 
@@ -39,7 +35,7 @@ class: dv
 
 - Visualize
 
-- Model
+- Manipulate
 
 ]
 
@@ -53,62 +49,18 @@ class: dv
 
 - Text / CSV files
   
-  - `readr` 
-  
-  - Tab, comma, space delimited
+  - `readr`
 
 --
 
 - Excel
   
-  - `readxl`
+  - `readxl` / `openxlsx`
 
   - Multiple sheets
   
-  - xls or xlsx
+  - Reading from messy sheets
 
---
-
-- Access databases
-
-  - `DBI` and `odbc`
-
----
-
-class: dv
-
-# Manipulate 
-
---
-
-- Wrangle your data
-
-  - `filter` for specific rows
-  
-  - `mutate` data sets to add or alter columns
-  
-  - `select` certain columns to work with
-
---
-  
-- Whatever this thing is
-    
-  - `%&gt;%`
-      
-  - Hint: it's called a pipe - _Chaining_ operations
-
---
-
-- Joining tables together
-
-  - `left_join`, and `right_join`, and `anti_join`, oh my!
-  
-- Summary statistics
-
-  - `group_by` - separate your dataset into distinct groups
-  
-  - `summarize` - calculate a 1 number summary for each group (mean)
-  
 ---
 
 class: dv
@@ -119,19 +71,19 @@ class: dv
 
 - `ggplot2`
 
+  - Grammar of Graphics
+
   - Scatter plots
   
   - Line graphs
-   
-- Multiple lines
-
-  - Faceting - One graph per line
   
-  - One graph with multiple lines
+  - Bar charts
+   
+- Grouping / Faceting
 
-- Interactive ggplot graphs
-
-  - `plotly` and `ggplotly`
+  - Grouping = 1 chart, many lines
+  
+  - Faceting = many charts, 1 line per chart
 
 ]
 
@@ -144,37 +96,53 @@ class: dv
 ]
 
 
-
+  
 ---
 
 class: dv
 
-# Model
+# Manipulate 
 
-* R comes with a number of statistical tools
+--
+
+- Wrangle your data with `dplyr`
+
+  - `select` certain columns to work with
+
+  - `filter` for specific rows
   
-  * `lm()` - Linear Regression
-  
-  * `glm()` - General Linear Model 
-    
-      * Logistic regression, Poisson, Gamma
+  - `mutate` data sets to add or alter columns
   
 --
   
-* Packages provide more advanced tools
+- The pipe
+    
+  - `%&gt;%`
+      
+  - Chaining operations
 
-  * `ranger` - Random forests
-  
-  * `caret` - Tools to streamline the modeling process
-  
+--
 
+- Tidying data
+
+  - `gather` and `spread`. From _wide_ to _long_
+  
+--
+  
+- Groupwise calculations
+
+  - `group_by` - separate your dataset into distinct groups
+  
+  - `summarize` - calculate a 1 number summary for each group (mean)
+  
 ---
+
 
 class: dv, center, middle
 
 # Let's get into it
 
-[Basics](./2-r-basics.html)
+[Prereqs](./2-r-basics.html)
     </textarea>
 <script src="libs/remark-latest.min.js"></script>
 <script>var slideshow = remark.create({

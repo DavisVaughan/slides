@@ -1,5 +1,5 @@
 ---
-title: "Your first R analysis"
+title: "The R Toolkit"
 output:
   xaringan::moon_reader:
     css: ["default", "custom.css"]
@@ -22,15 +22,11 @@ class: dv
 
 --
 
-### Learning R!
-
---
-
 .pull-left[
 
-- Import
+- Basics
 
-- Manipulate
+- Import
 
 ]
 
@@ -38,7 +34,7 @@ class: dv
 
 - Visualize
 
-- Model
+- Manipulate
 
 ]
 
@@ -52,62 +48,18 @@ class: dv
 
 - Text / CSV files
   
-  - `readr` 
-  
-  - Tab, comma, space delimited
+  - `readr`
 
 --
 
 - Excel
   
-  - `readxl`
+  - `readxl` / `openxlsx`
 
   - Multiple sheets
   
-  - xls or xlsx
+  - Reading from messy sheets
 
---
-
-- Access databases
-
-  - `DBI` and `odbc`
-
----
-
-class: dv
-
-# Manipulate 
-
---
-
-- Wrangle your data
-
-  - `filter` for specific rows
-  
-  - `mutate` data sets to add or alter columns
-  
-  - `select` certain columns to work with
-
---
-  
-- Whatever this thing is
-    
-  - `%>%`
-      
-  - Hint: it's called a pipe - _Chaining_ operations
-
---
-
-- Joining tables together
-
-  - `left_join`, and `right_join`, and `anti_join`, oh my!
-  
-- Summary statistics
-
-  - `group_by` - separate your dataset into distinct groups
-  
-  - `summarize` - calculate a 1 number summary for each group (mean)
-  
 ---
 
 class: dv
@@ -118,19 +70,19 @@ class: dv
 
 - `ggplot2`
 
+  - Grammar of Graphics
+
   - Scatter plots
   
   - Line graphs
-   
-- Multiple lines
-
-  - Faceting - One graph per line
   
-  - One graph with multiple lines
+  - Bar charts
+   
+- Grouping / Faceting
 
-- Interactive ggplot graphs
-
-  - `plotly` and `ggplotly`
+  - Grouping = 1 chart, many lines
+  
+  - Faceting = many charts, 1 line per chart
 
 ]
 
@@ -181,37 +133,53 @@ rates_growth %>%
   ggplot(aes(x = month, y = fund_value, color = scenario)) + 
   geom_line()
 ```
-
+  
 ---
 
 class: dv
 
-# Model
+# Manipulate 
 
-* R comes with a number of statistical tools
+--
+
+- Wrangle your data with `dplyr`
+
+  - `select` certain columns to work with
+
+  - `filter` for specific rows
   
-  * `lm()` - Linear Regression
-  
-  * `glm()` - General Linear Model 
-    
-      * Logistic regression, Poisson, Gamma
+  - `mutate` data sets to add or alter columns
   
 --
   
-* Packages provide more advanced tools
+- The pipe
+    
+  - `%>%`
+      
+  - Chaining operations
 
-  * `ranger` - Random forests
-  
-  * `caret` - Tools to streamline the modeling process
-  
+--
 
+- Tidying data
+
+  - `gather` and `spread`. From _wide_ to _long_
+  
+--
+  
+- Groupwise calculations
+
+  - `group_by` - separate your dataset into distinct groups
+  
+  - `summarize` - calculate a 1 number summary for each group (mean)
+  
 ---
+
 
 class: dv, center, middle
 
 # Let's get into it
 
-[Basics](./2-r-basics.html)
+[Prereqs](./2-r-basics.html)
   
   
   

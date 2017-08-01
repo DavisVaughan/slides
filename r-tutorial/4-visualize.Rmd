@@ -1,0 +1,283 @@
+---
+title: "Visualization"
+output:
+  xaringan::moon_reader:
+    css: ["default", "custom.css"]
+    chakra: libs/remark-latest.min.js
+    lib_dir: libs
+    nature:
+      highlightStyle: github
+      highlightLines: true
+      countIncrementalSlides: false
+---
+
+```{r, include = FALSE}
+library(tidyverse)
+library(nycflights13)
+ggplot2::theme_set(new = ggplot2::theme_minimal())
+```
+
+
+class: dv
+
+# Visualization
+
+* The `ggplot2` package
+
+  * Grammar of Graphics
+  
+  * Building a chart from layers
+  
+  * Incredibly flexible
+  
+---
+
+class: dv
+
+# 30 year treasury projections
+
+* 3 scenarios
+
+* 5 years of projections per scenario
+
+```{r, eval=FALSE}
+rates <- read_csv("data/example_rates3.csv")
+rates
+```
+
+```{r, echo=FALSE, message = FALSE}
+rates <- read_csv("data/example_rates3.csv") %>% 
+  mutate(date = zoo::as.yearmon(date),
+         scenario = as.character(scenario)) %>% 
+  select(-asset) %>%
+  rename(returns = return)
+rmarkdown:::print.paged_df(rates)
+```
+
+---
+
+class: dv
+
+# ggplot()
+
+* Every plot begins with a call to `ggplot()`
+
+* This sets up a blank canvas for your charts
+
+```{r, message=FALSE, fig.height=4, fig.width=9, fig.align='center', dpi=500, out.width="650px"}
+ggplot()
+```
+
+--
+
+.center[
+## Thrilling, I know.
+]
+
+---
+
+class: dv
+
+# ggplot() data / aesthetics
+
+* The data you are going to be charting is defined with `data =`
+
+* The columns you map to the x-axis and y-axis are `aesthetics`
+
+```{r, message=FALSE, fig.height=4, fig.width=9, fig.align='center', dpi=500, out.width="650px"}
+ggplot(
+  data    = rates, 
+  mapping = aes(x = date, y = returns))
+```
+
+---
+
+class: dv
+
+# ggplot() +
+
+* Add layers with `+`
+
+* Layers like points or lines are called _geometries_. Add with `geom_point` or `geom_line`
+
+```{r, message=FALSE, fig.height=4, fig.width=9, fig.align='center', dpi=500, out.width="650px"}
+ggplot(
+  data    = rates, 
+  mapping = aes(x = date, y = returns)) +
+{{ geom_point()}}
+```
+
+---
+
+class: dv
+
+# Grouping
+
+* We have another dimension to look at, `scenario`
+
+* Adding a `color` aesthetic will add a unique color for each scenario
+
+```{r, message=FALSE, fig.height=4, fig.width=9, fig.align='center', dpi=500, out.width="650px"}
+ggplot(
+  data    = rates, 
+  mapping = aes(x = date, y = returns, color = scenario)) +
+  geom_point()
+```
+
+
+---
+
+class: dv
+
+# Geometries
+
+* Line graph?
+
+* Just switch out `geom_point` for `geom_line`
+
+```{r, message=FALSE, fig.height=4, fig.width=9, fig.align='center', dpi=500, out.width="650px"}
+ggplot(
+  data    = rates, 
+  mapping = aes(x = date, y = returns, color = scenario)) +
+{{ geom_line()}}
+```
+
+---
+
+class: dv
+
+# Geometries
+
+* Bar graph of median returns per scenario?
+
+--
+
+* Switch out `geom_point` for `geom_bar`. Scenario on x, Returns on y. Fill not color.
+
+
+```{r, message=FALSE, fig.height=4, fig.width=9, fig.align='center', dpi=500, out.width="650px"}
+ggplot(
+  data    = rates, 
+  mapping = aes(x = scenario, y = returns, fill = scenario)) +
+{{ geom_bar(stat  = "summary", fun.y = "median") }}
+```
+
+---
+
+class: dv
+
+# Faceting
+
+* Instead of 3 lines on 1 chart...
+
+* ...can I put 1 line on 3 charts?
+
+```{r, message=FALSE, fig.height=4, fig.width=9, fig.align='center', dpi=500, out.width="650px"}
+ggplot(
+  data    = rates, 
+  mapping = aes(x = date, y = returns, color = scenario)) +
+  geom_line()
+```
+
+---
+
+class: dv
+
+# Faceting
+
+* Faceting allows you to split one chart into many
+
+* `facet_wrap`
+
+```{r, message=FALSE, fig.height=4, fig.width=9, fig.align='center', dpi=500, out.width="625px"}
+ggplot(
+  data    = rates, 
+  mapping = aes(x = date, y = returns)) +
+  geom_line() +
+{{ facet_wrap(~scenario, nrow = 1) }}
+```
+
+---
+
+class: dv
+
+# Faceting
+
+* Faceting allows you to split one chart into many
+
+* `facet_wrap`
+
+```{r, message=FALSE, fig.height=4, fig.width=9, fig.align='center', dpi=500, out.width="625px"}
+ggplot(
+  data    = rates, 
+  mapping = aes(x = date, y = returns)) +
+  geom_line() +
+{{ facet_wrap(~scenario, nrow = 3) }}
+```
+
+---
+
+class: dv
+
+# Faceting
+
+* Faceting allows you to split one chart into many
+
+* `facet_wrap`
+
+
+
+```{r, message=FALSE, fig.height=4, fig.width=9, fig.align='center', dpi=500, out.width="625px"}
+ggplot(
+  data    = rates, 
+  mapping = aes(x = date, y = returns)) +
+  geom_line() +
+{{  facet_wrap(~scenario, nrow = 3, scales = "free_y") }}
+```
+
+---
+
+class: dv
+
+# Labels
+
+* `labs()` to change the x-axis, y-axis, legend, title, ...
+
+* Change the legend title by setting the label for the relevant aesthetic (`color`)
+
+```{r, message=FALSE, fig.height=4, fig.width=9, fig.align='center', dpi=500, out.width="600px"}
+ggplot(
+  data    = rates, 
+  mapping = aes(x = date, y = returns, color = scenario)) +
+  geom_line() +
+{{ labs(x = "Date", y = "Treasury Rate", color = "Scenario #", title = "Treasury rates over 3 scenarios", subtitle = "Projection period of 5 years", caption  = "Data from MG-ALFA - 08/01/2017")}}
+```
+
+---
+
+class: dv
+
+# Colors
+
+* Manually set colors using `scale_color_manual`
+
+* Integrated color palettes using `scale_color_brewer` from http://colorbrewer2.org
+
+
+```{r, message=FALSE, fig.height=4, fig.width=9, fig.align='center', dpi=500, out.width="625px"}
+ggplot(
+  data    = rates, 
+  mapping = aes(x = date, y = returns, color = scenario)) +
+  geom_line() +
+{{ scale_color_manual(values = c("#37424A", "#822433", "#B89002")) }}
+```
+
+
+
+---
+
+class: dv, center, middle
+
+# Next up..
+
+[Manipulation](./5-manipulation.html)

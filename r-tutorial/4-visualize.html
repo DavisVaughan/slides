@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Visualization</title>
+    <meta charset="utf-8">
+    <link href="libs/remark-css/example.css" rel="stylesheet" />
+    <link href="libs/pagedtable/css/pagedtable.css" rel="stylesheet" />
+    <script src="libs/pagedtable/js/pagedtable.js"></script>
+    <link rel="stylesheet" href="custom.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# Visualization
+
+---
+
+
+
+
+
+class: dv
+
+# Visualization
+
+* The `ggplot2` package
+
+  * Grammar of Graphics
+  
+  * Building a chart from layers
+  
+  * Incredibly flexible
+  
+---
+
+class: dv
+
+# 30 year treasury projections
+
+* 3 scenarios
+
+* 5 years of projections per scenario
+
+
+```r
+rates &lt;- read_csv("data/example_rates3.csv")
+rates
+```
+
+&lt;div data-pagedtable="false"&gt;
+  &lt;script data-pagedtable-source type="application/json"&gt;
+{"columns":[{"label":["scenario"],"name":[1],"type":["chr"],"align":["left"]},{"label":["date"],"name":[2],"type":["S3: yearmon"],"align":["right"]},{"label":["returns"],"name":[3],"type":["dbl"],"align":["right"]}],"data":[{"1":"1","2":"Jan 2017","3":"0.03184376"},{"1":"1","2":"Feb 2017","3":"0.03274644"},{"1":"1","2":"Mar 2017","3":"0.03432526"},{"1":"1","2":"Apr 2017","3":"0.03213121"},{"1":"1","2":"May 2017","3":"0.03376360"},{"1":"1","2":"Jun 2017","3":"0.03393197"},{"1":"1","2":"Jul 2017","3":"0.03618350"},{"1":"1","2":"Aug 2017","3":"0.03769849"},{"1":"1","2":"Sep 2017","3":"0.03787342"},{"1":"1","2":"Oct 2017","3":"0.03675290"},{"1":"1","2":"Nov 2017","3":"0.03549022"},{"1":"1","2":"Dec 2017","3":"0.03914452"},{"1":"1","2":"Jan 2018","3":"0.04351335"},{"1":"1","2":"Feb 2018","3":"0.04080373"},{"1":"1","2":"Mar 2018","3":"0.04091467"},{"1":"1","2":"Apr 2018","3":"0.04154248"},{"1":"1","2":"May 2018","3":"0.04551516"},{"1":"1","2":"Jun 2018","3":"0.04745223"},{"1":"1","2":"Jul 2018","3":"0.05144956"},{"1":"1","2":"Aug 2018","3":"0.05088497"},{"1":"1","2":"Sep 2018","3":"0.05053056"},{"1":"1","2":"Oct 2018","3":"0.05192276"},{"1":"1","2":"Nov 2018","3":"0.05159141"},{"1":"1","2":"Dec 2018","3":"0.05174687"},{"1":"1","2":"Jan 2019","3":"0.04972451"},{"1":"1","2":"Feb 2019","3":"0.04926908"},{"1":"1","2":"Mar 2019","3":"0.05035532"},{"1":"1","2":"Apr 2019","3":"0.05586144"},{"1":"1","2":"May 2019","3":"0.05804769"},{"1":"1","2":"Jun 2019","3":"0.06094034"},{"1":"1","2":"Jul 2019","3":"0.05791883"},{"1":"1","2":"Aug 2019","3":"0.05548764"},{"1":"1","2":"Sep 2019","3":"0.05465781"},{"1":"1","2":"Oct 2019","3":"0.05167427"},{"1":"1","2":"Nov 2019","3":"0.05697747"},{"1":"1","2":"Dec 2019","3":"0.06019169"},{"1":"1","2":"Jan 2020","3":"0.06607430"},{"1":"1","2":"Feb 2020","3":"0.06183426"},{"1":"1","2":"Mar 2020","3":"0.05951263"},{"1":"1","2":"Apr 2020","3":"0.06194022"},{"1":"1","2":"May 2020","3":"0.06136731"},{"1":"1","2":"Jun 2020","3":"0.05916557"},{"1":"1","2":"Jul 2020","3":"0.05905986"},{"1":"1","2":"Aug 2020","3":"0.05943178"},{"1":"1","2":"Sep 2020","3":"0.05785650"},{"1":"1","2":"Oct 2020","3":"0.05728348"},{"1":"1","2":"Nov 2020","3":"0.05533223"},{"1":"1","2":"Dec 2020","3":"0.05974042"},{"1":"1","2":"Jan 2021","3":"0.06000279"},{"1":"1","2":"Feb 2021","3":"0.05835672"},{"1":"1","2":"Mar 2021","3":"0.05626696"},{"1":"1","2":"Apr 2021","3":"0.05443855"},{"1":"1","2":"May 2021","3":"0.05426369"},{"1":"1","2":"Jun 2021","3":"0.05610366"},{"1":"1","2":"Jul 2021","3":"0.05436902"},{"1":"1","2":"Aug 2021","3":"0.05295944"},{"1":"1","2":"Sep 2021","3":"0.05537865"},{"1":"1","2":"Oct 2021","3":"0.05915233"},{"1":"1","2":"Nov 2021","3":"0.06055308"},{"1":"1","2":"Dec 2021","3":"0.06044128"},{"1":"2","2":"Jan 2017","3":"0.03025923"},{"1":"2","2":"Feb 2017","3":"0.03047094"},{"1":"2","2":"Mar 2017","3":"0.03008429"},{"1":"2","2":"Apr 2017","3":"0.03326518"},{"1":"2","2":"May 2017","3":"0.03269041"},{"1":"2","2":"Jun 2017","3":"0.03364174"},{"1":"2","2":"Jul 2017","3":"0.03246556"},{"1":"2","2":"Aug 2017","3":"0.03202809"},{"1":"2","2":"Sep 2017","3":"0.03274204"},{"1":"2","2":"Oct 2017","3":"0.03458091"},{"1":"2","2":"Nov 2017","3":"0.03669458"},{"1":"2","2":"Dec 2017","3":"0.03385495"},{"1":"2","2":"Jan 2018","3":"0.03103151"},{"1":"2","2":"Feb 2018","3":"0.03353522"},{"1":"2","2":"Mar 2018","3":"0.03395351"},{"1":"2","2":"Apr 2018","3":"0.03375530"},{"1":"2","2":"May 2018","3":"0.03102263"},{"1":"2","2":"Jun 2018","3":"0.02999999"},{"1":"2","2":"Jul 2018","3":"0.02790232"},{"1":"2","2":"Aug 2018","3":"0.02838877"},{"1":"2","2":"Sep 2018","3":"0.02869587"},{"1":"2","2":"Oct 2018","3":"0.02812058"},{"1":"2","2":"Nov 2018","3":"0.02843696"},{"1":"2","2":"Dec 2018","3":"0.02855241"},{"1":"2","2":"Jan 2019","3":"0.02987032"},{"1":"2","2":"Feb 2019","3":"0.03036366"},{"1":"2","2":"Mar 2019","3":"0.02995309"},{"1":"2","2":"Apr 2019","3":"0.02734505"},{"1":"2","2":"May 2019","3":"0.02668335"},{"1":"2","2":"Jun 2019","3":"0.02567924"},{"1":"2","2":"Jul 2019","3":"0.02713462"},{"1":"2","2":"Aug 2019","3":"0.02846639"},{"1":"2","2":"Sep 2019","3":"0.02918127"},{"1":"2","2":"Oct 2019","3":"0.03111796"},{"1":"2","2":"Nov 2019","3":"0.02854402"},{"1":"2","2":"Dec 2019","3":"0.02737718"},{"1":"2","2":"Jan 2020","3":"0.02551693"},{"1":"2","2":"Feb 2020","3":"0.02721174"},{"1":"2","2":"Mar 2020","3":"0.02829756"},{"1":"2","2":"Apr 2020","3":"0.02736613"},{"1":"2","2":"May 2020","3":"0.02778767"},{"1":"2","2":"Jun 2020","3":"0.02899188"},{"1":"2","2":"Jul 2020","3":"0.02926701"},{"1":"2","2":"Aug 2020","3":"0.02911524"},{"1":"2","2":"Sep 2020","3":"0.03009941"},{"1":"2","2":"Oct 2020","3":"0.03052437"},{"1":"2","2":"Nov 2020","3":"0.03169445"},{"1":"2","2":"Dec 2020","3":"0.02946355"},{"1":"2","2":"Jan 2021","3":"0.02947065"},{"1":"2","2":"Feb 2021","3":"0.03033744"},{"1":"2","2":"Mar 2021","3":"0.03148499"},{"1":"2","2":"Apr 2021","3":"0.03260129"},{"1":"2","2":"May 2021","3":"0.03275774"},{"1":"2","2":"Jun 2021","3":"0.03170918"},{"1":"2","2":"Jul 2021","3":"0.03275443"},{"1":"2","2":"Aug 2021","3":"0.03366643"},{"1":"2","2":"Sep 2021","3":"0.03223296"},{"1":"2","2":"Oct 2021","3":"0.03030026"},{"1":"2","2":"Nov 2021","3":"0.02963727"},{"1":"2","2":"Dec 2021","3":"0.02973862"},{"1":"3","2":"Jan 2017","3":"0.03206814"},{"1":"3","2":"Feb 2017","3":"0.03000965"},{"1":"3","2":"Mar 2017","3":"0.03003134"},{"1":"3","2":"Apr 2017","3":"0.02938876"},{"1":"3","2":"May 2017","3":"0.03202480"},{"1":"3","2":"Jun 2017","3":"0.03438573"},{"1":"3","2":"Jul 2017","3":"0.03502806"},{"1":"3","2":"Aug 2017","3":"0.03802062"},{"1":"3","2":"Sep 2017","3":"0.03825364"},{"1":"3","2":"Oct 2017","3":"0.03881290"},{"1":"3","2":"Nov 2017","3":"0.03842275"},{"1":"3","2":"Dec 2017","3":"0.03895671"},{"1":"3","2":"Jan 2018","3":"0.03922525"},{"1":"3","2":"Feb 2018","3":"0.04078801"},{"1":"3","2":"Mar 2018","3":"0.04238814"},{"1":"3","2":"Apr 2018","3":"0.04250716"},{"1":"3","2":"May 2018","3":"0.04180705"},{"1":"3","2":"Jun 2018","3":"0.04149624"},{"1":"3","2":"Jul 2018","3":"0.04186955"},{"1":"3","2":"Aug 2018","3":"0.04341907"},{"1":"3","2":"Sep 2018","3":"0.04198080"},{"1":"3","2":"Oct 2018","3":"0.04263106"},{"1":"3","2":"Nov 2018","3":"0.04414841"},{"1":"3","2":"Dec 2018","3":"0.04353557"},{"1":"3","2":"Jan 2019","3":"0.04343883"},{"1":"3","2":"Feb 2019","3":"0.04411691"},{"1":"3","2":"Mar 2019","3":"0.04285072"},{"1":"3","2":"Apr 2019","3":"0.04286808"},{"1":"3","2":"May 2019","3":"0.04085796"},{"1":"3","2":"Jun 2019","3":"0.03943184"},{"1":"3","2":"Jul 2019","3":"0.04152331"},{"1":"3","2":"Aug 2019","3":"0.04624282"},{"1":"3","2":"Sep 2019","3":"0.04489200"},{"1":"3","2":"Oct 2019","3":"0.04819656"},{"1":"3","2":"Nov 2019","3":"0.04775049"},{"1":"3","2":"Dec 2019","3":"0.04799622"},{"1":"3","2":"Jan 2020","3":"0.04942368"},{"1":"3","2":"Feb 2020","3":"0.05120474"},{"1":"3","2":"Mar 2020","3":"0.04768240"},{"1":"3","2":"Apr 2020","3":"0.04904142"},{"1":"3","2":"May 2020","3":"0.04845556"},{"1":"3","2":"Jun 2020","3":"0.04710666"},{"1":"3","2":"Jul 2020","3":"0.04469064"},{"1":"3","2":"Aug 2020","3":"0.04617085"},{"1":"3","2":"Sep 2020","3":"0.04746306"},{"1":"3","2":"Oct 2020","3":"0.04872853"},{"1":"3","2":"Nov 2020","3":"0.04976970"},{"1":"3","2":"Dec 2020","3":"0.05129354"},{"1":"3","2":"Jan 2021","3":"0.04994102"},{"1":"3","2":"Feb 2021","3":"0.04891887"},{"1":"3","2":"Mar 2021","3":"0.04746128"},{"1":"3","2":"Apr 2021","3":"0.04847885"},{"1":"3","2":"May 2021","3":"0.04948410"},{"1":"3","2":"Jun 2021","3":"0.04980750"},{"1":"3","2":"Jul 2021","3":"0.05037369"},{"1":"3","2":"Aug 2021","3":"0.04929535"},{"1":"3","2":"Sep 2021","3":"0.05056289"},{"1":"3","2":"Oct 2021","3":"0.05180297"},{"1":"3","2":"Nov 2021","3":"0.04885836"},{"1":"3","2":"Dec 2021","3":"0.04865456"}],"options":{"columns":{"min":{},"max":[10]},"rows":{"min":[10],"max":[10]},"pages":{}}}
+  &lt;/script&gt;
+&lt;/div&gt;
+
+---
+
+class: dv
+
+# ggplot()
+
+* Every plot begins with a call to `ggplot()`
+
+* This sets up a blank canvas for your charts
+
+
+```r
+ggplot()
+```
+
+&lt;img src="4-visualize_files/figure-html/unnamed-chunk-4-1.png" width="650px" style="display: block; margin: auto;" /&gt;
+
+--
+
+.center[
+## Thrilling, I know.
+]
+
+---
+
+class: dv
+
+# ggplot() data / aesthetics
+
+* The data you are going to be charting is defined with `data =`
+
+* The columns you map to the x-axis and y-axis are `aesthetics`
+
+
+```r
+ggplot(
+  data    = rates, 
+  mapping = aes(x = date, y = returns))
+```
+
+&lt;img src="4-visualize_files/figure-html/unnamed-chunk-5-1.png" width="650px" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: dv
+
+# ggplot() +
+
+* Add layers with `+`
+
+* Layers like points or lines are called _geometries_. Add with `geom_point` or `geom_line`
+
+
+```r
+ggplot(
+  data    = rates, 
+  mapping = aes(x = date, y = returns)) +
+* geom_point()
+```
+
+&lt;img src="4-visualize_files/figure-html/unnamed-chunk-6-1.png" width="650px" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: dv
+
+# Grouping
+
+* We have another dimension to look at, `scenario`
+
+* Adding a `color` aesthetic will add a unique color for each scenario
+
+
+```r
+ggplot(
+  data    = rates, 
+  mapping = aes(x = date, y = returns, color = scenario)) +
+  geom_point()
+```
+
+&lt;img src="4-visualize_files/figure-html/unnamed-chunk-7-1.png" width="650px" style="display: block; margin: auto;" /&gt;
+
+
+---
+
+class: dv
+
+# Geometries
+
+* Line graph?
+
+* Just switch out `geom_point` for `geom_line`
+
+
+```r
+ggplot(
+  data    = rates, 
+  mapping = aes(x = date, y = returns, color = scenario)) +
+* geom_line()
+```
+
+&lt;img src="4-visualize_files/figure-html/unnamed-chunk-8-1.png" width="650px" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: dv
+
+# Geometries
+
+* Bar graph of median returns per scenario?
+
+--
+
+* Switch out `geom_point` for `geom_bar`. Scenario on x, Returns on y. Fill not color.
+
+
+
+```r
+ggplot(
+  data    = rates, 
+  mapping = aes(x = scenario, y = returns, fill = scenario)) +
+* geom_bar(stat  = "summary", fun.y = "median") 
+```
+
+&lt;img src="4-visualize_files/figure-html/unnamed-chunk-9-1.png" width="650px" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: dv
+
+# Faceting
+
+* Instead of 3 lines on 1 chart...
+
+* ...can I put 1 line on 3 charts?
+
+
+```r
+ggplot(
+  data    = rates, 
+  mapping = aes(x = date, y = returns, color = scenario)) +
+  geom_line()
+```
+
+&lt;img src="4-visualize_files/figure-html/unnamed-chunk-10-1.png" width="650px" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: dv
+
+# Faceting
+
+* Faceting allows you to split one chart into many
+
+* `facet_wrap`
+
+
+```r
+ggplot(
+  data    = rates, 
+  mapping = aes(x = date, y = returns)) +
+  geom_line() +
+* facet_wrap(~scenario, nrow = 1) 
+```
+
+&lt;img src="4-visualize_files/figure-html/unnamed-chunk-11-1.png" width="625px" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: dv
+
+# Faceting
+
+* Faceting allows you to split one chart into many
+
+* `facet_wrap`
+
+
+```r
+ggplot(
+  data    = rates, 
+  mapping = aes(x = date, y = returns)) +
+  geom_line() +
+* facet_wrap(~scenario, nrow = 3) 
+```
+
+&lt;img src="4-visualize_files/figure-html/unnamed-chunk-12-1.png" width="625px" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: dv
+
+# Faceting
+
+* Faceting allows you to split one chart into many
+
+* `facet_wrap`
+
+
+
+
+```r
+ggplot(
+  data    = rates, 
+  mapping = aes(x = date, y = returns)) +
+  geom_line() +
+*  facet_wrap(~scenario, nrow = 3, scales = "free_y") 
+```
+
+&lt;img src="4-visualize_files/figure-html/unnamed-chunk-13-1.png" width="625px" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: dv
+
+# Labels
+
+* `labs()` to change the x-axis, y-axis, legend, title, ...
+
+* Change the legend title by setting the label for the relevant aesthetic (`color`)
+
+
+```r
+ggplot(
+  data    = rates, 
+  mapping = aes(x = date, y = returns, color = scenario)) +
+  geom_line() +
+* labs(x = "Date", y = "Treasury Rate", color = "Scenario #", title = "Treasury rates over 3 scenarios", subtitle = "Projection period of 5 years", caption  = "Data from MG-ALFA - 08/01/2017")
+```
+
+&lt;img src="4-visualize_files/figure-html/unnamed-chunk-14-1.png" width="600px" style="display: block; margin: auto;" /&gt;
+
+---
+
+class: dv
+
+# Colors
+
+* Manually set colors using `scale_color_manual`
+
+* Integrated color palettes using `scale_color_brewer` from http://colorbrewer2.org
+
+
+
+```r
+ggplot(
+  data    = rates, 
+  mapping = aes(x = date, y = returns, color = scenario)) +
+  geom_line() +
+* scale_color_manual(values = c("#37424A", "#822433", "#B89002")) 
+```
+
+&lt;img src="4-visualize_files/figure-html/unnamed-chunk-15-1.png" width="625px" style="display: block; margin: auto;" /&gt;
+
+
+
+---
+
+class: dv, center, middle
+
+# Next up..
+
+[Manipulation](./5-manipulation.html)
+    </textarea>
+<script src="libs/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {window.dispatchEvent(new Event('resize'));});</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+});
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>
