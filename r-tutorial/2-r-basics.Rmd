@@ -158,14 +158,17 @@ class: dv
 * The most familiar way to store data
 ]
 
-<br>
+---  
 
-```{r, eval=FALSE}
+```{r, eval = FALSE}
 flights
 ```
 
-```{r, echo=FALSE}
-head(flights)
+```{r, echo = FALSE}
+flights %>%
+  select(year, month, day, dep_time, sched_dep_time, carrier, distance) %>%
+  filter(!is.na(dep_time)) %>%
+  tibble:::print.tbl(flights, n = 8)
 ```
 
 ---
@@ -174,23 +177,24 @@ class: dv
 
 # Data frames / Tibbles
 
-* Building a tibble from scratch
+.pull-left[
+* Another example
+]
 
---
+.pull-right[
 
-```{r}
-df <- tibble(
-  policy_name = c("Jason", "Danielle", "Andrew"),
-  premium     = c(    120,      250.4,      300))
+]
 
-df
+--- 
+
+```{r, eval = FALSE}
+airlines
 ```
 
---
+```{r, echo = FALSE}
+tibble:::print.tbl(airlines, n = 8)
+```
 
-<br></br>
-
-.center[Most often, you will import one from Excel]
 
 ---
 

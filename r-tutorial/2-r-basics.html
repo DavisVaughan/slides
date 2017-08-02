@@ -3,7 +3,7 @@
   <head>
     <title>Prereqs</title>
     <meta charset="utf-8">
-    <link href="libs/remark-css/example.css" rel="stylesheet" />
+    <link href="libs/remark-css-0.0.1/example.css" rel="stylesheet" />
     <link rel="stylesheet" href="custom.css" type="text/css" />
   </head>
   <body>
@@ -182,7 +182,7 @@ class: dv
 * The most familiar way to store data
 ]
 
-&lt;br&gt;
+---  
 
 
 ```r
@@ -191,7 +191,7 @@ flights
 
 
 ```
-## # A tibble: 6 x 7
+## # A tibble: 328,521 x 7
 ##    year month   day dep_time sched_dep_time carrier distance
 ##   &lt;int&gt; &lt;int&gt; &lt;int&gt;    &lt;int&gt;          &lt;int&gt;   &lt;chr&gt;    &lt;dbl&gt;
 ## 1  2013     1     1      517            515      UA     1400
@@ -200,6 +200,9 @@ flights
 ## 4  2013     1     1      544            545      B6     1576
 ## 5  2013     1     1      554            600      DL      762
 ## 6  2013     1     1      554            558      UA      719
+## 7  2013     1     1      555            600      B6     1065
+## 8  2013     1     1      557            600      EV      229
+## # ... with 3.285e+05 more rows
 ```
 
 ---
@@ -208,33 +211,37 @@ class: dv
 
 # Data frames / Tibbles
 
-* Building a tibble from scratch
+.pull-left[
+* Another example
+]
 
---
+.pull-right[
+
+]
+
+--- 
 
 
 ```r
-df &lt;- tibble(
-  policy_name = c("Jason", "Danielle", "Andrew"),
-  premium     = c(    120,      250.4,      300))
-
-df
+airlines
 ```
 
+
 ```
-## # A tibble: 3 x 2
-##   policy_name premium
-##         &lt;chr&gt;   &lt;dbl&gt;
-## 1       Jason   120.0
-## 2    Danielle   250.4
-## 3      Andrew   300.0
+## # A tibble: 16 x 2
+##   carrier                        name
+##     &lt;chr&gt;                       &lt;chr&gt;
+## 1      9E           Endeavor Air Inc.
+## 2      AA      American Airlines Inc.
+## 3      AS        Alaska Airlines Inc.
+## 4      B6             JetBlue Airways
+## 5      DL        Delta Air Lines Inc.
+## 6      EV    ExpressJet Airlines Inc.
+## 7      F9      Frontier Airlines Inc.
+## 8      FL AirTran Airways Corporation
+## # ... with 8 more rows
 ```
 
---
-
-&lt;br&gt;&lt;/br&gt;
-
-.center[Most often, you will import one from Excel]
 
 ---
 

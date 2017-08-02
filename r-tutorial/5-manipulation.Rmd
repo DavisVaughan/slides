@@ -29,7 +29,7 @@ class: dv
 
 # Data - flights from nycflights13
   
-```{r, echo = FALSE, message=FALSE}
+```{r, echo = FALSE, message=FALSE, warning=FALSE}
 library(tidyverse)
 library(nycflights13)
 
@@ -72,10 +72,33 @@ class: dv
 
 ```{r}
 # Select year and carrier
-# Store in a new data frame
-yr_carrier <- select(flights, year, carrier)
+select(.data = flights, year, carrier)
+```
 
-yr_carrier
+---
+
+class: dv
+
+# select() columns
+
+* Everything except...
+
+```{r}
+# Select everything except year
+select(.data = flights, -year)
+```
+
+---
+
+class: dv
+
+# select() columns
+
+* `contains` / `starts_with` / `ends_with`
+
+```{r}
+# Select columns containing "time"
+select(.data = flights, contains("time"))
 ```
 
 ---
@@ -207,8 +230,12 @@ class: dv
 
 * Can we quantify "late" and "really late"?
 
-```{r}
+```{r, eval = FALSE}
 flights
+```
+
+```{r, echo= FALSE}
+tibble:::print.tbl(flights, n = 6)
 ```
 
 ---
@@ -231,7 +258,7 @@ class: dv
 
 ```{r}
 flights_late <- flights %>%
-  mutate(late_time = dep_time - sched_dep_time)
+  mutate(delay = dep_time - sched_dep_time)
 
 flights_late
 ```
@@ -248,10 +275,103 @@ class: dv
 
 ```{r}
 flights_late %>%
-  filter(late_time > 0) %>%  # Only look at late flights
-  pull(late_time) %>%        # Extract the late column
-  quantile()                 # The quantiles of the late flights
+  filter(delay > 0) %>%  # Only look at late flights
+  pull(delay) %>%        # Extract the late column
+  quantile()             # The quantiles of the late flights
 ```
+
+---
+
+class: dv
+
+# Three "cases" to categorize
+
+* Case 1: 
+
+  * IF `delay <= 0`
+  
+  * THEN `early`
+  
+* Case 2: 
+  
+  * IF `delay <= 87` 
+  
+  * THEN `late`
+  
+* Case 3: 
+  
+  * OTHERWISE `really late`
+
+---
+
+class: dv
+
+# How might we do this in Excel?
+
+* First attempt
+
+```{r, eval = FALSE}
+=IF(H2 <= 0, "early", IF(AND(H2>0, H2<=87), "late", IF(H2>87,"really late")))
+```
+
+--
+
+* If you know about ALT+ENTER to align nicely
+
+```{r, eval = FALSE}
+=IF(H2 <= 0,           "early", 
+ IF(AND(H2>0, H2<=87), "late", 
+ IF(H2>87,             "really late")))
+```
+
+--
+
+* If you understand that the order matters
+
+```{r, eval = FALSE}
+=IF(H2<=0, "early",
+ IF(H2<=87,"late",
+           "really late"))
+```
+
+--
+
+* Excel 2016
+
+```{r, eval = FALSE}
+=IFS(H2<=0, "early", H2<=87, "late", "really late")
+```
+
+---
+
+class: dv
+
+# Even Excel knows the deal
+
+--
+
+* Error prone:
+
+  * "It might work 75% of the time, but return unexpected results 25% of the time. _Unfortunately, the odds of you catching the 25% are slim._"
+
+--
+
+* Maintenance / Documentation
+
+  * "Multiple IF statements can become incredibly difficult to maintain, _especially when you come back some time later and try to figure out what you, or worse someone else, was trying to do._"
+
+--
+
+* Speed
+
+  * They are really slow. >1 second for 3 conditions and ~320,000 rows
+
+--
+
+* Just don't
+
+  * "If you find yourself with an IF statement that just seems to keep growing with no end in sight, _it’s time to put down the mouse and rethink your strategy._"
+
 
 ---
 
@@ -259,21 +379,44 @@ class: dv
 
 # mutate() and case_when()
 
-* Imagine doing this with Excel formulas - nested If/Or
-
 ```{r}
 flights_cat <- flights_late %>% 
   mutate(
     
     # Separate the flights into 3 categories
     late_category = case_when(
-      late_time <= 0   ~ "early",
-      late_time <= 87  ~ "late",
-      TRUE             ~ "really late")) %>%
+      delay <= 0   ~ "early",             # Early if negative delay
+      delay <= 87  ~ "late",              # Late if below 75th percentile
+      TRUE         ~ "really late")) %>%  # Really late otherwise
   
   # Only select relevant columns
-  select(dep_time, sched_dep_time, late_time, late_category)
+  select(dep_time, sched_dep_time, delay, late_category)
 ```
+
+
+```{r, echo=FALSE}
+start <- proc.time()
+
+flights_cat <- flights_late %>% 
+  mutate(
+    
+    # Separate the flights into 3 categories
+    late_category = case_when(
+      delay <= 0   ~ "early",             # Early if negative delay
+      delay <= 87  ~ "late",              # Late if below 75th percentile
+      TRUE         ~ "really late")) %>%  # Really late otherwise
+  
+  # Only select relevant columns
+  select(dep_time, sched_dep_time, delay, late_category)
+
+proc.time() - start
+```
+
+--
+
+* Readability / Comments
+
+* Scalable / Speed
 
 ---
 
@@ -309,20 +452,20 @@ class: dv
 
 * For `flights`, what if we wanted the average `distance` for each `month`?
 
-```{r, include=FALSE}
-options(tibble.print_min = 12)
-```
 
-
-```{r}
+```{r, eval = FALSE}
 flights_late %>%
   group_by(month) %>%                      # Group rows by month 1, 2, ..., 12
   summarize(avg_distance = mean(distance), # For each group, avg distance
-            avg_delay    = mean(late_time))
+            avg_delay    = mean(delay))
 ```
 
-```{r, include=FALSE}
-options(tibble.print_min = 10)
+```{r, echo=FALSE}
+flights_late %>%
+  group_by(month) %>%                      # Group rows by month 1, 2, ..., 12
+  summarize(avg_distance = mean(distance), # For each group, avg distance
+            avg_delay    = mean(delay)) %>%
+  tibble:::print.tbl(n = 12)
 ```
 
 ---
