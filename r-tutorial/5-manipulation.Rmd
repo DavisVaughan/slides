@@ -30,12 +30,33 @@ class: dv
 # Data - flights from nycflights13
   
 ```{r, echo = FALSE, message=FALSE, warning=FALSE}
-library(tidyverse)
-library(nycflights13)
+# library(tidyverse)
+# library(nycflights13)
+# 
+# flights <- flights %>%
+#   select(year, month, day, dep_time, sched_dep_time, carrier, distance) %>%
+#   filter(!is.na(dep_time))
 
-flights <- flights %>%
-  select(year, month, day, dep_time, sched_dep_time, carrier, distance) %>%
-  filter(!is.na(dep_time))
+library(nycflights13)
+library(tidyverse)
+
+flights<-flights %>%
+  filter(!is.na(dep_time)) %>%
+  mutate(minute_real = substr(dep_time, nchar(dep_time)-1, nchar(dep_time)),
+         minute_real = ifelse(is.na(as.numeric(minute_real)), 0, as.numeric(minute_real)),
+         hour_real   = substr(dep_time, start = 1, stop = nchar(dep_time)-2),
+         hour_real = ifelse(is.na(as.numeric(hour_real)), 0, as.numeric(hour_real)),
+         dep_time2    = as.numeric(hour_real) * 60 + as.numeric(minute_real),
+         sched_dep_time2 = as.numeric(hour) * 60 + as.numeric(minute),
+         delay = dep_time2 - sched_dep_time2, 
+         diff = delay - dep_delay) %>%
+  mutate(dep_time_fix = ifelse(diff != 0, dep_time2 - diff, dep_time2),
+         delay2 = dep_time_fix - sched_dep_time2, 
+         diff2 = delay2 - dep_delay) %>%
+  mutate(dep_time = dep_time_fix,
+         sched_dep_time = sched_dep_time2) %>%
+    select(year, month, day, dep_time, sched_dep_time, carrier, distance)
+
 ```
 
 ```{r, eval=FALSE}
@@ -294,7 +315,7 @@ class: dv
   
 * Case 2: 
   
-  * IF `delay <= 87` 
+  * IF `delay <= 50` 
   
   * THEN `late`
   
@@ -311,7 +332,7 @@ class: dv
 * First attempt
 
 ```{r, eval = FALSE}
-=IF(H2 <= 0, "early", IF(AND(H2>0, H2<=87), "late", IF(H2>87,"really late")))
+=IF(H2 <= 0, "early", IF(AND(H2>0, H2<=50), "late", IF(H2>50,"really late")))
 ```
 
 --
@@ -320,8 +341,8 @@ class: dv
 
 ```{r, eval = FALSE}
 =IF(H2 <= 0,           "early", 
- IF(AND(H2>0, H2<=87), "late", 
- IF(H2>87,             "really late")))
+ IF(AND(H2>0, H2<=50), "late", 
+ IF(H2>50,             "really late")))
 ```
 
 --
@@ -330,7 +351,7 @@ class: dv
 
 ```{r, eval = FALSE}
 =IF(H2<=0, "early",
- IF(H2<=87,"late",
+ IF(H2<=50,"late",
            "really late"))
 ```
 
@@ -339,7 +360,7 @@ class: dv
 * Excel 2016
 
 ```{r, eval = FALSE}
-=IFS(H2<=0, "early", H2<=87, "late", "really late")
+=IFS(H2<=0, "early", H2<=50, "late", "really late")
 ```
 
 ---
@@ -386,7 +407,7 @@ flights_cat <- flights_late %>%
     # Separate the flights into 3 categories
     late_category = case_when(
       delay <= 0   ~ "early",             # Early if negative delay
-      delay <= 87  ~ "late",              # Late if below 75th percentile
+      delay <= 50  ~ "late",              # Late if below 75th percentile
       TRUE         ~ "really late")) %>%  # Really late otherwise
   
   # Only select relevant columns
@@ -403,7 +424,7 @@ flights_cat <- flights_late %>%
     # Separate the flights into 3 categories
     late_category = case_when(
       delay <= 0   ~ "early",             # Early if negative delay
-      delay <= 87  ~ "late",              # Late if below 75th percentile
+      delay <= 50  ~ "late",              # Late if below 75th percentile
       TRUE         ~ "really late")) %>%  # Really late otherwise
   
   # Only select relevant columns

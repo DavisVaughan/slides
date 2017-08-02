@@ -166,8 +166,21 @@ flights
 
 ```{r, echo = FALSE}
 flights %>%
-  select(year, month, day, dep_time, sched_dep_time, carrier, distance) %>%
   filter(!is.na(dep_time)) %>%
+  mutate(minute_real = substr(dep_time, nchar(dep_time)-1, nchar(dep_time)),
+         minute_real = ifelse(is.na(as.numeric(minute_real)), 0, as.numeric(minute_real)),
+         hour_real   = substr(dep_time, start = 1, stop = nchar(dep_time)-2),
+         hour_real = ifelse(is.na(as.numeric(hour_real)), 0, as.numeric(hour_real)),
+         dep_time2    = as.numeric(hour_real) * 60 + as.numeric(minute_real),
+         sched_dep_time2 = as.numeric(hour) * 60 + as.numeric(minute),
+         delay = dep_time2 - sched_dep_time2, 
+         diff = delay - dep_delay) %>%
+  mutate(dep_time_fix = ifelse(diff != 0, dep_time2 - diff, dep_time2),
+         delay2 = dep_time_fix - sched_dep_time2, 
+         diff2 = delay2 - dep_delay) %>%
+  mutate(dep_time = dep_time_fix,
+         sched_dep_time = sched_dep_time2) %>%
+    select(year, month, day, dep_time, sched_dep_time, carrier, distance) %>%
   tibble:::print.tbl(flights, n = 8)
 ```
 
