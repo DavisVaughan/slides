@@ -219,26 +219,6 @@ ggplot(
 
 class: dv
 
-# Faceting
-
-* Faceting allows you to split one chart into many
-
-* `facet_wrap`
-
-
-
-```{r, message=FALSE, fig.height=4, fig.width=9, fig.align='center', dpi=500, out.width="625px"}
-ggplot(
-  data    = rates, 
-  mapping = aes(x = date, y = returns)) +
-  geom_line() +
-{{  facet_wrap(~scenario, nrow = 3, scales = "free_y") }}
-```
-
----
-
-class: dv
-
 # Labels
 
 * `labs()` to change the x-axis, y-axis, legend, title, ...

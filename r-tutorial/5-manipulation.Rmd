@@ -17,7 +17,7 @@ class: dv
 
 * Three main things to talk about
 
-  * Data transformation
+  * Data transformation (verbs)
   
   * The pipe
   

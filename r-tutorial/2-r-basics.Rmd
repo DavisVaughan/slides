@@ -122,6 +122,8 @@ class: dv
 
 * Takes _input_, returns a consistent _output_
 
+* Inputs are more formally called _arguments_, and are named
+
 * Black box to the user (but not really)
 
 --
@@ -136,13 +138,14 @@ add_one <- function(value) {
 ```{r}
 x <- 5
 
-add_one(x)
+add_one(value = x)
 ```
 
 --
 
 * x = input
 * 6 = output
+* value = argument
 
 ---
 

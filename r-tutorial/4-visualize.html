@@ -3,9 +3,9 @@
   <head>
     <title>Visualization</title>
     <meta charset="utf-8">
-    <link href="libs/remark-css/example.css" rel="stylesheet" />
-    <link href="libs/pagedtable/css/pagedtable.css" rel="stylesheet" />
-    <script src="libs/pagedtable/js/pagedtable.js"></script>
+    <link href="libs/remark-css-0.0.1/example.css" rel="stylesheet" />
+    <link href="libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+    <script src="libs/pagedtable-1.1/js/pagedtable.js"></script>
     <link rel="stylesheet" href="custom.css" type="text/css" />
   </head>
   <body>
@@ -246,29 +246,6 @@ ggplot(
 
 class: dv
 
-# Faceting
-
-* Faceting allows you to split one chart into many
-
-* `facet_wrap`
-
-
-
-
-```r
-ggplot(
-  data    = rates, 
-  mapping = aes(x = date, y = returns)) +
-  geom_line() +
-*  facet_wrap(~scenario, nrow = 3, scales = "free_y") 
-```
-
-&lt;img src="4-visualize_files/figure-html/unnamed-chunk-13-1.png" width="625px" style="display: block; margin: auto;" /&gt;
-
----
-
-class: dv
-
 # Labels
 
 * `labs()` to change the x-axis, y-axis, legend, title, ...
@@ -284,7 +261,7 @@ ggplot(
 * labs(x = "Date", y = "Treasury Rate", color = "Scenario #", title = "Treasury rates over 3 scenarios", subtitle = "Projection period of 5 years", caption  = "Data from MG-ALFA - 08/01/2017")
 ```
 
-&lt;img src="4-visualize_files/figure-html/unnamed-chunk-14-1.png" width="600px" style="display: block; margin: auto;" /&gt;
+&lt;img src="4-visualize_files/figure-html/unnamed-chunk-13-1.png" width="600px" style="display: block; margin: auto;" /&gt;
 
 ---
 
@@ -306,7 +283,7 @@ ggplot(
 * scale_color_manual(values = c("#37424A", "#822433", "#B89002")) 
 ```
 
-&lt;img src="4-visualize_files/figure-html/unnamed-chunk-15-1.png" width="625px" style="display: block; margin: auto;" /&gt;
+&lt;img src="4-visualize_files/figure-html/unnamed-chunk-14-1.png" width="625px" style="display: block; margin: auto;" /&gt;
 
 
 
