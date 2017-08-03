@@ -34,16 +34,11 @@ class: dv
 
 class: dv
 
-# 30 year treasury projections
+# 30 year treasury rate projections
 
 * 3 scenarios
 
-* 5 years of projections per scenario
-
-```{r, eval=FALSE}
-rates <- read_csv("data/example_rates3.csv")
-rates
-```
+* 5 years of monthly projections per scenario
 
 ```{r, echo=FALSE, message = FALSE}
 rates <- read_csv("data/example_rates3.csv") %>% 
@@ -80,14 +75,14 @@ class: dv
 
 # ggplot() data / aesthetics
 
-* The data you are going to be charting is defined with `data =`
+* Charts are created from tibble columns. Specify the tibble with `data =`
 
-* The columns you map to the x-axis and y-axis are `aesthetics`
+* `aesthetics` are features of the chart that you _map_ columns to (x-axis, y-axis, color)
 
 ```{r, message=FALSE, fig.height=4, fig.width=9, fig.align='center', dpi=500, out.width="650px"}
 ggplot(
-  data    = rates, 
-  mapping = aes(x = date, y = returns))
+  data    = rates,                       
+  mapping = aes(x = date, y = returns))  # mapping date to the x-axis
 ```
 
 ---
@@ -98,7 +93,7 @@ class: dv
 
 * Add layers with `+`
 
-* Layers like points or lines are called _geometries_. Add with `geom_point` or `geom_line`
+* Layers that plot data are _geometries_. (`geom_point` and `geom_line`)
 
 ```{r, message=FALSE, fig.height=4, fig.width=9, fig.align='center', dpi=500, out.width="650px"}
 ggplot(
@@ -113,15 +108,15 @@ class: dv
 
 # Grouping
 
-* We have another dimension to look at, `scenario`
+* What about `scenario`?
 
-* Adding a `color` aesthetic will add a unique color for each scenario
+* Mapping to the `color` aesthetic will add a unique color for each scenario
 
 ```{r, message=FALSE, fig.height=4, fig.width=9, fig.align='center', dpi=500, out.width="650px"}
 ggplot(
   data    = rates, 
   mapping = aes(x = date, y = returns, color = scenario)) +
-  geom_point()
+  geom_point()                       # ^ mapping scenario to the color aesthetic
 ```
 
 
@@ -133,7 +128,7 @@ class: dv
 
 * Line graph?
 
-* Just switch out `geom_point` for `geom_line`
+* Switch out `geom_point` for `geom_line`
 
 ```{r, message=FALSE, fig.height=4, fig.width=9, fig.align='center', dpi=500, out.width="650px"}
 ggplot(
@@ -148,11 +143,11 @@ class: dv
 
 # Geometries
 
-* Bar graph of median returns per scenario?
+* Bar graph of median returns per scenario? (`scenario` on x, `returns` on y)
 
 --
 
-* Switch out `geom_point` for `geom_bar`. Scenario on x, Returns on y. Fill not color.
+* Switch out `geom_point` for `geom_bar`
 
 
 ```{r, message=FALSE, fig.height=4, fig.width=9, fig.align='center', dpi=500, out.width="650px"}
@@ -168,9 +163,9 @@ class: dv
 
 # Faceting
 
-* Instead of 3 lines on 1 chart...
+* Still a line graph
 
-* ...can I put 1 line on 3 charts?
+* Each scenario will get its own chart
 
 ```{r, message=FALSE, fig.height=4, fig.width=9, fig.align='center', dpi=500, out.width="650px"}
 ggplot(
@@ -185,9 +180,9 @@ class: dv
 
 # Faceting
 
-* Faceting allows you to split one chart into many
+* Faceting by `scenario`
 
-* `facet_wrap`
+* `facet_wrap` layer
 
 ```{r, message=FALSE, fig.height=4, fig.width=9, fig.align='center', dpi=500, out.width="625px"}
 ggplot(
@@ -195,24 +190,6 @@ ggplot(
   mapping = aes(x = date, y = returns)) +
   geom_line() +
 {{ facet_wrap(~scenario, nrow = 1) }}
-```
-
----
-
-class: dv
-
-# Faceting
-
-* Faceting allows you to split one chart into many
-
-* `facet_wrap`
-
-```{r, message=FALSE, fig.height=4, fig.width=9, fig.align='center', dpi=500, out.width="625px"}
-ggplot(
-  data    = rates, 
-  mapping = aes(x = date, y = returns)) +
-  geom_line() +
-{{ facet_wrap(~scenario, nrow = 3) }}
 ```
 
 ---

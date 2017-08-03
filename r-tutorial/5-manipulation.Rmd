@@ -15,7 +15,7 @@ class: dv
 
 # Manipulation using dplyr and tidyr 
 
-* Three main things to talk about
+* Three topics
 
   * Data transformation (verbs)
   
@@ -68,9 +68,7 @@ flights
 ```{r, echo=FALSE, message=FALSE}
 library(nycflights13)
 
-rmarkdown:::print.paged_df(flights)
-
-c(rows = dim(flights)[1], cols = dim(flights)[2])
+flights
 ```
 
 ---
@@ -91,10 +89,9 @@ class: dv
 
 # select() columns
 
-* Extract specific columns
+* Select `year` and `carrier`
 
 ```{r}
-# Select year and carrier
 select(.data = flights, year, carrier)
 ```
 
@@ -195,6 +192,8 @@ class: dv
 
 # A question
 
+.pull-left[
+
 * Can we categorize flights as:
 
   * early
@@ -202,15 +201,23 @@ class: dv
   * late 
   
   * really late
+  
+]
+
+.pull-right[
 
 * Can we quantify "late" and "really late"?
+  
+]
+
+
 
 ```{r, eval = FALSE}
-flights
+flights %>% select(dep_time, sched_dep_time)
 ```
 
 ```{r, echo= FALSE}
-tibble:::print.tbl(flights, n = 6)
+flights %>% select(dep_time, sched_dep_time) %>% tibble:::print.tbl(n = 6)
 ```
 
 ---
@@ -237,6 +244,10 @@ flights_late <- flights %>%
 
 flights_late
 ```
+
+--
+
+* Negative delay = "early"
 
 ---
 
@@ -283,7 +294,7 @@ class: dv
 
 # How might we do this in Excel?
 
-* First attempt
+* First attempt (H2 = delay column)
 
 ```{r, eval = FALSE}
 =IF(H2 <= 0, "early", IF(AND(H2>0, H2<=50), "late", IF(H2>50,"really late")))
@@ -326,6 +337,8 @@ class: dv
 * Maintenance / Documentation
 
   * "Multiple IF statements can become incredibly difficult to maintain, _especially when you come back some time later and try to figure out what you, or worse someone else, was trying to do._"
+  
+  * No comments in the cell
 
 --
 
@@ -413,6 +426,7 @@ class: dv
 
 ![](img/group_summary.png)
 
+
 ---
 
 class: dv
@@ -461,7 +475,6 @@ class: dv
     
 ![](./img/tidy.png)
 
-* Tidy data makes your analysis steps feel natural
 
 ---
 
@@ -469,14 +482,17 @@ class: dv
 
 # Tidy VS Untidy example
 
-```{r}
+* Not tidy! Think about performing a `group_by` to get the average de for each product. Can't group on columns!
+
+<br></br>
+
+```{r, echo = FALSE}
 library(readxl)
 de <- read_excel(path = "data/example_de.xlsx")
 
 head(de)
 ```
 
-* Not tidy! Think about performing a `group_by` to get the average de for each product. Can't group on columns!
 
 ---
 
@@ -497,9 +513,15 @@ class: dv
 
 * `gather()` multiple columns together
 
-```{r}
+```{r, eval = FALSE}
 de %>% 
   gather(key = product, value = de, -scenario, -year)
+```
+
+```{r, echo = FALSE}
+de %>% 
+  gather(key = product, value = de, -scenario, -year) %>%
+  tibble:::print.tbl(n = 12)
 ```
 
 ---
@@ -508,7 +530,7 @@ class: dv
 
 # Tidying up - gather() and spread()
 
-```{r}
+```{r, eval = FALSE}
 library(FinCal)
 de %>% 
   gather(key = product, value = de, -scenario, -year) %>%
@@ -516,9 +538,14 @@ de %>%
   summarise(pvde = pv.uneven(r = .05, cf = -de))
 ```
 
-<br></br>
-
-* Also, visualizations are built around data being in this form
+```{r, echo = FALSE}
+library(FinCal)
+de %>% 
+  gather(key = product, value = de, -scenario, -year) %>%
+  group_by(product, scenario) %>%
+  summarise(pvde = pv.uneven(r = .05, cf = -de)) %>%
+  tibble:::print.tbl(n = 12)
+```
 
 ---
 

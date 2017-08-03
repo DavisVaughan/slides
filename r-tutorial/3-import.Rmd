@@ -47,23 +47,6 @@ class: dv
 
 class: dv
 
-# Importing data into R
-
-* The first step for each example is always to library the tidyverse package
-
-* This libraries a number of packages, including `readr`
-
-```{r}
-library(tidyverse)
-
-tidyverse_packages()
-```
-
-
----
-
-class: dv
-
 # readr - Read CSV
 
 * Reading and writing "flat" files
@@ -74,8 +57,7 @@ class: dv
 
 <br>
 
-
-![](img/fictrad-easy-csv.png)
+<img src = "img/fictrad-easy-csv.png", style = "zoom:150%"></img>
 ]
 
 ---
@@ -187,25 +169,22 @@ class: dv
 
 # openxlsx - Writing Excel files
 
-* Writing the `airlines` dataset to a completely new Excel file
+* Writing the `airlines` dataset to Excel
 
 ```{r, eval = FALSE}
 # install.packages("openxlsx")
 
 library(openxlsx)
 
-# Create a blank Excel workbook
-# Alternatively loadWorkbook()
-wb <- createWorkbook()          
+# Easy way
+write.xlsx(x    = airlines, 
+           file = "data/example-airlines.xlsx")
 
-# Add a worksheet named airlines_sheet
-addWorksheet(wb, sheetName = "airlines_sheet")
-
-# Add the airlines dataset to the sheet
-writeData(wb, sheet = "airlines_sheet", x = airlines)
-
-# Save and close the workbook
-saveWorkbook(wb, file = "data/example-airlines.xlsx")
+# Flexible way
+# wb <- createWorkbook()          
+# addWorksheet(wb, sheetName = "airlines_sheet")
+# writeData(wb, sheet = "airlines_sheet", x = airlines)
+# saveWorkbook(wb, file = "data/example-airlines.xlsx")
 ```
 
 ---

@@ -72,7 +72,7 @@ class: dv
 
 # Variables
 
-* A way to store data in R
+* A way to store data in R and assign it a name
 
 * Created using the _assignment operator_ `<-`
 
@@ -116,7 +116,7 @@ class: dv
 
 # Functions
 
-* A piece of R code that should do 1 thing well
+* A block of R code to perform a task (VBA Sub/Macro)
 
 * Should have a descriptive name
 
@@ -185,30 +185,6 @@ flights %>%
          sched_dep_time = sched_dep_time2) %>%
     select(year, month, day, dep_time, sched_dep_time, carrier, distance) %>%
   tibble:::print.tbl(flights, n = 8)
-```
-
----
-
-class: dv
-
-# Data frames / Tibbles
-
-.pull-left[
-* Another example
-]
-
-.pull-right[
-
-]
-
---- 
-
-```{r, eval = FALSE}
-airlines
-```
-
-```{r, echo = FALSE}
-tibble:::print.tbl(airlines, n = 8)
 ```
 
 
