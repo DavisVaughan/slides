@@ -241,9 +241,6 @@ class: dv
 
 * Manually set colors using `scale_color_manual`
 
-* Integrated color palettes using `scale_color_brewer` from http://colorbrewer2.org
-
-
 ```{r, message=FALSE, fig.height=4, fig.width=9, fig.align='center', dpi=500, out.width="625px"}
 ggplot(
   data    = rates, 

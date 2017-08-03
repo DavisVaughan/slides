@@ -40,6 +40,8 @@ class: dv
 library(nycflights13)
 library(tidyverse)
 
+flights <- readr::read_csv("data/example-flights-full.csv")
+ 
 flights<-flights %>%
   filter(!is.na(dep_time)) %>%
   mutate(minute_real = substr(dep_time, nchar(dep_time)-1, nchar(dep_time)),
@@ -100,32 +102,6 @@ select(.data = flights, year, carrier)
 
 class: dv
 
-# select() columns
-
-* Everything except...
-
-```{r}
-# Select everything except year
-select(.data = flights, -year)
-```
-
----
-
-class: dv
-
-# select() columns
-
-* `contains` / `starts_with` / `ends_with`
-
-```{r}
-# Select columns containing "time"
-select(.data = flights, contains("time"))
-```
-
----
-
-class: dv
-
 # The pipe %>%
 
 --
@@ -134,31 +110,13 @@ class: dv
 
 * The _object_ to the left of the pipe becomes the _first argument_ of the function on the right
 
+* Take `x` _and then_ do `f` to it
+
 ![](./img/pipe.png)
 
 ]
 
 --
-
-.pull-right[
-
-![](img/pipeitup.jpg)
-
-]
-
----
-
-class: dv
-
-# The pipe %>%
-
-.pull-left[
-
-* The _object_ to the left of the pipe becomes the _first argument_ of the function on the right
-
-![](./img/pipe.png)
-
-]
 
 .pull-right[
 
@@ -170,8 +128,31 @@ flights %>%
   select(dep_time) %>%
   head(4)
 
-# head(select(flights, dep_time), 4)
+# depart <- select(flights, dep_time)
+# head(depart 4)
 ```
+
+]
+
+---
+
+class: dv
+
+# The pipe %>%
+
+.pull-left[
+
+* The _object_ to the left of the pipe becomes the _first argument_ of the function on the right
+
+* Take `x` _and then_ do `f` to it
+
+![](./img/pipe.png)
+
+]
+
+.pull-right[
+
+![](img/pipeitup.jpg)
 
 ]
 
@@ -206,33 +187,6 @@ head(AA, 2)
 flights %>%
   filter(carrier == "AA") %>%
   head(2)
-```
-
-
----
-
-class: dv
-
-# arrange() to order rows 
-
-* Order by distance? Lowest to highest? Vice versa?
-
-```{r}
-flights %>%
-  arrange(distance)
-```
-
----
-
-class: dv
-
-# arrange() to order rows 
-
-* Order by distance? Lowest to highest? Vice versa?
-
-```{r}
-flights %>%
-  arrange(desc(distance)) # descending order
 ```
 
 ---
@@ -296,9 +250,9 @@ class: dv
 
 ```{r}
 flights_late %>%
-  filter(delay > 0) %>%  # Only look at late flights
-  pull(delay) %>%        # Extract the late column
-  quantile()             # The quantiles of the late flights
+  filter(delay > 0) %>%  # Ignore flights that were early
+  pull(delay) %>%        # Pull only the delay column
+  quantile()             # Calculate the quantiles
 ```
 
 ---
@@ -353,14 +307,6 @@ class: dv
 =IF(H2<=0, "early",
  IF(H2<=50,"late",
            "really late"))
-```
-
---
-
-* Excel 2016
-
-```{r, eval = FALSE}
-=IFS(H2<=0, "early", H2<=50, "late", "really late")
 ```
 
 ---
@@ -434,6 +380,8 @@ proc.time() - start
 ```
 
 --
+
+<br></br>
 
 * Readability / Comments
 
@@ -560,14 +508,12 @@ class: dv
 
 # Tidying up - gather() and spread()
 
-* Why did I do that? Calculations are much easier to handle
-
 ```{r}
+library(FinCal)
 de %>% 
   gather(key = product, value = de, -scenario, -year) %>%
-  group_by(product) %>%
-  summarise(`0th percentile`  = quantile(de, probs = 0),
-            `10th percentile` = quantile(de, probs = .1))
+  group_by(product, scenario) %>%
+  summarise(pvde = pv.uneven(r = .05, cf = -de))
 ```
 
 <br></br>
@@ -594,11 +540,12 @@ class: dv
 * `spread()` is the complement to `gather()`
 
 ```{r}
-gathered_de <- de %>% gather(key = product, value = de, -scenario, -year)
-
-gathered_de %>%
-  spread(key = product, value = de) %>%
-  head()
+library(FinCal)
+de %>% 
+  gather(key = product, value = de, -scenario, -year) %>%
+  group_by(product, scenario) %>%
+  summarise(pvde = pv.uneven(r = .05, cf = -de)) %>%
+  spread(key= product, value = pvde)
 ```
 
 ---
