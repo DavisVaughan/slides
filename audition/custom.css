@@ -1,0 +1,49 @@
+.dv {
+  background-color: #2C3E50;
+  color: #ffffff;
+  text-shadow: 0 0 20px #333;
+}
+
+.dv h1, .dv h2, .dv h3 {
+  color: #ffffff;
+  line-height: 1.0em;
+}
+
+a, a > code {
+  color: #ADD8E6;
+  text-decoration: none;
+}
+
+.remark-code, .remark-inline-code {
+  text-shadow: 0 0 0px #333;
+  padding: 0;
+}
+
+pre code {
+  padding: 1em;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  -khtml-border-radius: 10px;
+  border-radius: 10px;
+}
+
+.remark-slide-content {
+  padding-left: 15px;
+  padding-right: 15px;
+}
+
+.remark-slide-content > h1:first-of-type {
+  margin-left: 25px;
+}
+
+.remark-slide-content > h3 {
+  margin-left: 25px;
+}
+
+.remark-code-line-highlighted {
+  background-color: lightblue;
+}
+
+.pagedtable .even {
+    background-color: #2C3E50;
+}

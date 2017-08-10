@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>DataCamp tidyquant audition</title>
+    <meta charset="utf-8">
+    <link href="libs/remark-css-0.0.1/example.css" rel="stylesheet" />
+    <link rel="stylesheet" href="custom.css" type="text/css" />
+  </head>
+  <body>
+    <textarea id="source">
+class: center, middle, inverse, title-slide
+
+# DataCamp tidyquant audition
+
+---
+
+
+
+
+class: dv
+
+# Introduction
+
+* Who are we? 
+
+--
+
+* What is tidyquant?
+
+--
+
+* What will you learn today?
+  
+---
+
+class: dv
+
+# tq_get()
+
+--
+
+* Historical stock prices
+
+* Company financials
+
+* Exchange rates
+
+* And many others!
+
+---
+
+class: dv
+
+# tq_get() - Example
+
+
+```r
+tq_get(x = "AAPL", get = "stock.prices")
+```
+
+```
+## # A tibble: 2,670 x 7
+##          date   open   high    low    close    volume adjusted
+##        &lt;date&gt;  &lt;dbl&gt;  &lt;dbl&gt;  &lt;dbl&gt;    &lt;dbl&gt;     &lt;dbl&gt;    &lt;dbl&gt;
+##  1 2007-01-03 13.648 13.694 12.954 11.97143 309579900 10.81246
+##  2 2007-01-04 13.294 13.595 13.258 12.23714 211815100 11.05245
+##  3 2007-01-05 13.566 13.634 13.350 12.15000 208685400 10.97374
+##  4 2007-01-08 13.596 13.686 13.489 12.21000 199276700 11.02793
+##  5 2007-01-09 13.674 14.707 13.468 13.22429 837324600 11.94403
+##  6 2007-01-10 14.987 15.469 14.781 13.85714 738220000 12.51562
+##  7 2007-01-11 15.175 15.308 15.042 13.68572 360063200 12.36079
+##  8 2007-01-12 14.961 15.036 14.746 13.51714 328172600 12.20853
+##  9 2007-01-16 15.134 15.382 15.097 13.87143 311019100 12.52852
+## 10 2007-01-17 15.431 15.437 14.998 13.56428 411565000 12.25111
+## # ... with 2,660 more rows
+```
+
+  
+---
+
+class: dv
+
+# tq_get() - Arguments
+
+
+```r
+args(tq_get)
+```
+
+```
+## function (x, get = "stock.prices", complete_cases = TRUE, ...) 
+## NULL
+```
+
+&lt;br&gt;
+
+* _x_ - A character vector, or tibble of the symbols you would like to pull information for
+
+--
+
+* _get_ - A character vector representing the type of data to pull for `x`
+
+--
+
+* _complete_cases_ - Whether to remove symbols that throw an error during the call to `tq_get()`
+
+--
+
+&lt;br&gt;
+
+
+```r
+?tq_get
+```
+
+
+---
+
+class: dv
+
+# tq_get() - Example
+
+
+```r
+# 5 &amp; 10 Year Treasury rates
+treasury &lt;- tq_get(x   = c("DGS5", "DGS10"), 
+                   get = "economic.data")
+```
+
+
+```r
+treasury
+```
+
+```
+## # A tibble: 5,534 x 3
+##    symbol       date price
+##     &lt;chr&gt;     &lt;date&gt; &lt;dbl&gt;
+##  1   DGS5 2007-01-01    NA
+##  2   DGS5 2007-01-02  4.68
+##  3   DGS5 2007-01-03  4.66
+##  4   DGS5 2007-01-04  4.61
+##  5   DGS5 2007-01-05  4.65
+##  6   DGS5 2007-01-08  4.66
+##  7   DGS5 2007-01-09  4.65
+##  8   DGS5 2007-01-10  4.68
+##  9   DGS5 2007-01-11  4.73
+## 10   DGS5 2007-01-12  4.76
+## # ... with 5,524 more rows
+```
+
+
+---
+
+class: dv
+
+# tq_get() - Example
+
+
+```r
+# 5 &amp; 10 Year Treasury rates
+treasury &lt;- tq_get(x   = c("DGS5", "DGS10"), 
+                   get = "economic.data")
+```
+
+.pull-left[
+
+
+```r
+treasury %&gt;%
+  group_by(symbol) %&gt;%
+  count()
+```
+
+```
+## # A tibble: 2 x 2
+## # Groups:   symbol [2]
+##   symbol     n
+##    &lt;chr&gt; &lt;int&gt;
+## 1  DGS10  2767
+## 2   DGS5  2767
+```
+
+]
+
+--
+
+.pull-right[
+
+
+```r
+treasury %&gt;%
+  ggplot(aes(x = date, 
+             y = price, 
+             color = symbol)) +
+  geom_line()
+```
+
+![](img/treasury.png)
+
+]
+
+---
+
+class: dv
+
+# Much more to come!
+
+* _tq_mutate_ - Manipulate data using financial functions
+
+* _tq_performance_ - An integration with PerformanceAnalytics
+
+* _Scalability_ - Working with a large number of assets at once
+
+---
+
+class: dv, middle, center
+
+# Thank you!
+    </textarea>
+<script src="libs/remark-latest.min.js"></script>
+<script>var slideshow = remark.create({
+"highlightStyle": "github",
+"highlightLines": true,
+"countIncrementalSlides": false
+});
+if (window.HTMLWidgets) slideshow.on('afterShowSlide', function (slide) {window.dispatchEvent(new Event('resize'));});</script>
+
+<script type="text/x-mathjax-config">
+MathJax.Hub.Config({
+  tex2jax: {
+    skipTags: ['script', 'noscript', 'style', 'textarea', 'pre']
+  }
+});
+</script>
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+(function () {
+  var script = document.createElement('script');
+  script.type = 'text/javascript';
+  script.src  = 'https://cdn.bootcss.com/mathjax/2.7.1/MathJax.js?config=TeX-MML-AM_CHTML';
+  if (location.protocol !== 'file:' && /^https?:/.test(script.src))
+    script.src  = script.src.replace(/^https?:/, '');
+  document.getElementsByTagName('head')[0].appendChild(script);
+})();
+</script>
+  </body>
+</html>

@@ -1,0 +1,96 @@
+---
+title: "Audition Script"
+author: "Matt Dancho & Davis Vaughan"
+date: "8/9/2017"
+output: html_document
+---
+
+## Introduction
+
+//CLICK
+
+_Matt_) Hello, my name is Matt Dancho...
+
+_Davis_) ...and my name is Davis Vaughan. Together we have created this DataCamp audition to talk to you about our R package, tidyquant.
+
+//CLICK
+
+_Matt_) What is tidyquant? Tidyquant is a financial R package with the goal of taking all of the powerful infrastructure that exists in the R Finance world, xts, quantmod, and PerformanceAnalytics to name a few, and combining it with the data science workflow of the tidyverse to make the transition between the two as seamless as possible. Benefits of this combination include: working with familiar objects such as data frames, creating a workflow that uses both quantmod and dplyr functions, and most importantly, the ability to use the scalability of the tidyverse for financial applications.
+
+//CLICK
+
+_Davis_) In this audition, we will introduce tq_get, tidyquant's one stop shop for retrieving a number of different sources of financial data. We will show off a few examples of tq_get, explain how to use it, and finally show you how it integrates seamlessly into a tidyverse workflow. Let's get started!
+
+//CLICK
+
+---
+
+## tq_get()
+
+_Matt_)
+
+As Davis said, tq_get() is used to pull financial data from a number of different sources. 
+
+//CLICK
+
+Examples of this would be: historical stock prices, company financials, and exchange rates. Before I explain any further, let's look at a simple example.
+
+//CLICK
+
+# tq_get() - Example
+
+Here, we are using tq_get to pull stock price data for the company, Apple. The ticker symbol used by Apple on the stock market is AAPL, and that is what is used here. A tibble, or data frame, is returned, with 10 years of data by default. The data comes in a daily format, and returns the date, the stock price at the open, high, low, and close points of the day, the trade volume throughout that day, and the adjusted close price. Now that you have seen an example of tq_get in action, let's take a closer look at its arguments.
+
+//CLICK
+
+# tq_get() - Arguments
+
+The first argument, "x", is used to specify one or multiple symbols to pull information for. As you saw, we used "AAPL" to pull data for Apple. In the next example, you will see how to pull information for multiple symbols at once. 
+
+//CLICK
+
+The second argument, "get", tells tq_get what type of data to pull. For Apple, we pulled stock prices, but you can also use tq_get to pull company financials, economic data, and a number of other things.
+
+//CLICK
+
+Lastly, "complete_cases" lets you decide whether or not to keep symbols that return an error when you are pulling data. This can be useful when you are pulling a bunch of symbols at once.
+
+//CLICK
+
+To see a number of worked examples of tq_get, and to find a reference of all of the different sources of data that it can pull, check out the help documentation by typing question mark, then tq_get.
+
+Now, let's look at another example.
+
+//CLICK
+
+# tq_get() - Example
+
+_Davis_)
+
+Imagine, for your analysis, that you need some economic data, specifically, data on the 5 year and 10 year treasury rates. A great source of economic data is FRED, the Federal Reserve of Economic Data. By searching on the FRED website, we can find that the symbols for the 5 year and 10 year treasury rate are DGS5 and DGS10 respectively. To download them both at the same time, simply pass them to tq_get as a character vector. That, along with setting the get argument to economic data, will download the rates from FRED. The returned dataset is tidy, meaning that each row is an observation, and each column is a variable. This means that you can take the treasury dataset straight into an analysis that might use dplyr or ggplot. To demonstrate that, I'm going to use both of those packages to prove to you that both the 5 year and 10 year treasury rates were actually downloaded. On the screen, you can clearly see that the 5 year rate is there, but is the 10 year actually there too? Let's find out.
+
+//CLICK
+
+Because the dataset is tidy, we can immediately use a group by on the symbol column, and then call the count function. Both the 5 year and 10 year rates were definitely downloaded and have 2767 observations each, great! This is a good sanity check that everything downloaded appropriately, but tq_get would have warned you anyways if something went wrong.
+
+//CLICK
+
+Finally, we can pipe the data directly into ggplot2, and graph both the 10 year and the 5 year treasury rates over the past 10 years. The low 2% interest rates that have been affecting the markets over the past few years are very apparent in this graph.
+
+//CLICK
+
+# Much more to come!
+
+_Matt_)
+
+This just touches the tip of the iceberg for what is possible with tidyquant. Additional course topics might include: a large focus on tq_mutate for manipulating financial data in a tidy way, tq_performance as an integration with PerformanceAnalytics for calculating metrics on stocks or portfolios, and scalability to work with a large number of assets at once.
+
+//CLICK
+
+# Thank you!
+
+_Davis_) 
+
+Thank you, and we cannot wait to work on the full course very soon!
+
+
