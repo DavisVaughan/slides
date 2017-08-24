@@ -208,7 +208,7 @@ class: dv, center, middle
 
 # 1 - Beautiful visualizations
 
-```{r, echo=FALSE, message=FALSE, eval=FALSE}
+```{r, echo=FALSE, message=FALSE}
 library(tidyquant)
 library(highcharter)
 
