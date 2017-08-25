@@ -438,7 +438,7 @@ class: dv
 
 .pull-left[
 
-- 08/24/2017 
+- 08/25/2017 
   - Intro to R for Finance assigned
 
 - 09/01/2017
@@ -517,6 +517,24 @@ class: dv
 - My email
 
   - mvaugh15@uncc.edu
+
+---
+
+class: dv
+
+# Getting help
+
+* If you get an error, google it.
+
+* "How do I do [my thing] in R?"
+
+* Stack Overflow
+
+* [R 4 Data Science](http://r4ds.had.co.nz/)
+
+* [Hands on Programming with R](https://d1b10bmlvqabco.cloudfront.net/attach/ighbo26t3ua52t/igp9099yy4v10/igz7vp4w5su9/OReilly_HandsOn_Programming_with_R_2014.pdf)
+
+* If you really can't figure it out, email me. I'm happy to help.
 
 ---
 
