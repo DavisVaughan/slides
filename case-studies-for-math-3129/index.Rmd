@@ -6,4 +6,4 @@ Case study 1
 
 * [Excel Template](./2017-09-08_life-table/2-excel-implementation.xlsx)
 
-* [R Implementation](./2017-09-08_life-table/3-r-implementation.nb.html)
+* [R Implementation](./2017-09-08_life-table/3-r-implementation.html)

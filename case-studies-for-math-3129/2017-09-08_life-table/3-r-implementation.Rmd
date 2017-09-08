@@ -3,12 +3,12 @@ title: "Case Study - 1 - DeAlmeida"
 author: "Davis Vaughan"
 date: "9/6/2017"
 output:
-  html_notebook:
+  html_document:
     df_print: paged
     highlight: tango
     theme: flatly
-  html_document:
-    df_print: paged
+    code_folding: "show"
+    code_download: "true"
 ---
 
 ```{r setup, include=FALSE}
