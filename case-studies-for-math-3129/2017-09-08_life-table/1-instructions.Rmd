@@ -1,0 +1,79 @@
+---
+title: "Case Study - 1 - Instructions"
+author: "Davis Vaughan"
+date: "9/6/2017"
+output:
+  html_document:
+    theme: "flatly"
+    highlight: "tango"
+    df_print: paged
+---
+
+## Instructions
+
+Build an Illustrative Life Table in both Excel and R. The table should have the 
+following fields:
+
+* Age
+
+* t
+
+* $q_{x+t}$
+
+* $p_{x+t}$
+
+* $_{t}p_{x}$
+
+* $l_{x+t}$
+
+## Information required to build the ILT
+
+The information below is an excerpt from a larger Case Study provided by
+an FSA, Craig DeAlmeida, in Fall 2016.
+
+_“Assume 10 lives per 1000 mortality at age 65, and assume that the 
+mortality rate increases by 10% each year, doing the whole converting to a 
+survival rate and taking that to a power to avoid the mortality rate 
+going over 100%.”_
+
+_“The retirement group allocates quotas from each insurance company that 
+participates based on their benefit quotes, and our allocation has been steady 
+at \$60 million for several years. The average deposit has also been steady at 
+\$100 thousand, so, on average, each participant receives \$6000 on their 
+65th birthday and continues to receive \$6000 on subsequent birthdays as 
+long as they live.”_
+
+_"Current industry mortality tables stop at age 121, 
+so for this project assume that individuals do not live past that age."_
+
+## Formulas that might be useful
+
+
+Death/Survival probabilities must add to 1
+
+$$ _{t}p_x = 1 - _{t}q_{x} $$
+
+---
+
+Survival rates as products of other survival rates
+
+$$ _{t+s}p_{x} = _{t}p_{x} \times _{s}p_{x+t} $$
+
+---
+
+Force of mortality
+
+$$ \mu_{x+t} = - \frac{d(ln(_{t}p_{x}))}{dt} $$
+
+Which results in:
+
+$$ _{t}p_{x} = e^{-\int_{0}^{t}\mu_xdx} $$
+
+
+---
+
+Number of lives at any age
+
+$$ l_{x+t} = l_{x} \times _{t}p_{x} $$
+
+---

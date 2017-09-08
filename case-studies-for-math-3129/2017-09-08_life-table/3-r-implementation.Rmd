@@ -1,0 +1,340 @@
+---
+title: "Case Study - 1 - DeAlmeida"
+author: "Davis Vaughan"
+date: "9/6/2017"
+output:
+  html_notebook:
+    df_print: paged
+    highlight: tango
+    theme: flatly
+  html_document:
+    df_print: paged
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Building a Life Table in R
+
+```{r, message=FALSE, warning = FALSE}
+library(tidyverse)
+```
+
+### Add ages
+
+"Current industry mortality tables stop at age 121."
+
+```{r}
+# A vector 65, 66, ..., 121
+ages_vector <- 65:121
+
+# Create a "tibble". Basically a data frame.
+# Columns are specified as `col_name = col_data`
+life_table <- tibble(ages = ages_vector)
+
+life_table
+```
+
+### Add the current year
+
+We will also want to have a variable for the current year, `t`, starting at 0.
+
+```{r}
+life_table <- life_table %>%
+  mutate(t = ages - 65)
+
+life_table
+```
+
+### Add your p's and q's
+
+"Assume 10 lives per 1000 mortality at age 65."
+
+$$ q_{65} = 0.01 $$
+
+$$ p_{65} = 0.99 $$
+
+---
+
+"The _force of mortality_ increases by 10% every year."
+
+What does this mean? It means we could write the sequence of increasing 
+force of mortality values as:
+
+$$\begin{align} 
+\mu_{x}   &= \mu \\ 
+\mu_{x+1} &= \mu * 1.1 \\ 
+\mu_{x+2} &= \mu * 1.1^2 
+\end{align}$$
+
+---
+
+So $\mu$ is a constant...
+
+And how do we relate force of mortality to probability of survival?
+
+$$ p_x  = e ^ {-\int_{0}^{1} \mu_x dx} $$
+
+For $p_{65}$, let $\mu_{65} = \mu$.
+
+$$\begin{align}
+p_{65} &= e ^ {-\int_{0}^{1} \mu  dx} \\ &=  e^{(-\mu*1) -(-\mu * 0)} \\ &= e ^ {-\mu} 
+\end{align}$$
+
+---
+
+From $p_{65}$ to $p_{66}$, what happens? Force of mortality increases by 10%.
+
+
+$$\begin{align} 
+p_{66} &= e ^ {-1.1 \times\mu}  \\ &= (e ^ {-\mu} ) ^ {1.1}  \\ &= (p_{65}) ^ {1.1} 
+\end{align}$$
+
+---
+
+From $p_{66}$ to $p_{67}$, what happens? Force of mortality increases by 10%.
+
+
+$$\begin{align} 
+p_{67} &= e ^ {-1.1^2 \times\mu} \\ &= (e ^ {-\mu} ) ^ {1.1^2} \\ &= (p_{65}) ^ {1.1^2}
+\end{align}$$
+
+---
+
+The pattern emerges...
+
+$$ p_{65} = (p_{65}) ^ {1.1^0} \\ p_{66} = (p_{65}) ^ {1.1^1} \\ p_{67} = (p_{65}) ^ {1.1^2} \\ ... \\ p_{65 + t} = (0.99) ^ {1.1^t}$$
+
+---
+
+$$ q_{65 + t} = 1 - p_{65 + t} $$
+
+```{r}
+life_table <- life_table %>%
+  mutate(
+    `p_65+t` = .99 ^ (1.1 ^ t),
+    `q_65+t` = 1 - `p_65+t`
+  )
+
+life_table
+```
+
+### A visualization
+
+It's worth checking out what we have done so far. Let's look at increasing 
+mortality over time.
+
+```{r, fig.align='center', fig.width=8.5}
+life_table %>%
+  
+  # Renaming columns. These become the legend labels
+  rename(p = `p_65+t`, q = `q_65+t`) %>%
+  
+  # Gather p and q columns together
+  gather(key = p_or_q, value = prob, -ages, -t) %>%
+  
+  # The code that creates the plot
+  ggplot(aes(x = ages, y = prob, color = p_or_q)) + 
+  geom_line() +
+  
+  # Customization
+  labs(x = "Current Age", y = "Probability", 
+       title = "Probability of living (or dying) through 1 more year") +
+  theme_minimal() +
+  hrbrthemes::scale_color_ipsum()
+```
+
+
+### Adding $_{t}p_{65}$
+
+We have $p_{65+t}$, how do we generate $_{t}p_{65}$ from this?
+
+At first glance, this might seem difficult. In Excel we went back and forth 
+between columns E and F a lot, and had the special case of $_{0}p_{65} = 1$ 
+at the beginning.
+
+It's totally possible to do this in R, but you would have to use a _for loop_ 
+to implement that recursive calculation. Can we do something smarter?
+
+---
+
+Let's explore a few iterations of $_{t}p_{65}$.
+
+$$\begin{align} 
+_{0}p_{65} &= 1 \\ 
+_{1}p_{65} &= p_{65 + 0} \\ 
+_{2}p_{65} &= p_{65 + 0} \times p_{65 + 1} &= _{1}p_{65} \times p_{65 + 1} \\
+_{3}p_{65} &= p_{65 + 0} \times p_{65 + 1} \times p_{65 + 2} &= _{2}p_{65} \times p_{65 + 2}
+\end{align}$$
+
+---
+
+Notice that the middle equations there are a _cumulative product_ of $p_{65+t}$.
+
+$$\begin{align} 
+\text{original} &\rightarrow \text{cumprod}                                          &= _{t}p_{65} \\
+1               &\rightarrow 1                                                       &= _{0}p_{65} \\ 
+p_{65 + 0}      &\rightarrow 1 \times p_{65 + 0}                                     &= _{1}p_{65} \\ 
+p_{65 + 1}      &\rightarrow 1 \times p_{65 + 0} \times p_{65 + 1}                   &= _{2}p_{65} \\ 
+p_{65 + 2}      &\rightarrow 1 \times p_{65 + 0} \times p_{65 + 1} \times p_{65 + 2} &= _{3}p_{65} \\ 
+\end{align}$$
+
+---
+
+Steps to accomplish this in R?
+
+1) Lag (shift down) $p_{65+t}$
+2) Fill in a 1 where we lost a value from the lag
+3) Cumulative product of that column to generate $_{t}p_{65}$
+
+---
+
+```{r}
+# An initial attempt at lagging p_{65+t}
+life_table %>%
+  mutate(
+    p_lag = lag(`p_65+t`)
+  )
+
+# Lagging p_{65+t} but filling the NA with 1
+life_table %>% 
+  mutate(
+    p_lag               = lag(`p_65+t`),
+    p_lag_1             = lag(`p_65+t`, default = 1)
+  )
+
+# Now take the cumulative product of those lagged values
+life_table %>% 
+  mutate(
+    p_lag               = lag(`p_65+t`),
+    p_lag_1             = lag(`p_65+t`, default = 1),
+    p_lag_cumprod       = lag(`p_65+t`, default = 1) %>% cumprod()
+  )
+
+# That was kind of ugly, let's round a bit
+life_table %>% 
+  mutate(
+    p_lag               = lag(`p_65+t`),
+    p_lag_1             = lag(`p_65+t`, default = 1),
+    p_lag_cumprod       = lag(`p_65+t`, default = 1) %>% cumprod(),
+    p_lag_cumprod_round = lag(`p_65+t`, default = 1) %>% cumprod() %>% round(digits = 6)
+  )
+
+# Now let's just do it all in one step and save it as `t_p_65`
+life_table <- life_table %>% 
+  mutate(
+    `t_p_65` = lag(`p_65+t`, default = 1) %>% 
+                  cumprod() %>% 
+                  round(digits = 6)
+  )
+
+life_table
+```
+
+### Another visualization!
+
+```{r, fig.align='center', fig.width=8.5}
+life_table %>%
+  
+  # The code that creates the plot
+  ggplot(aes(x = t, y = t_p_65)) + 
+  geom_line() +
+  
+  # Customization
+  labs(x = "Number of years, t, past age 65", y = "Probability of survival for t years", 
+       title = "Probability of living for t years past age 65") +
+  theme_minimal() +
+  hrbrthemes::scale_color_ipsum()
+```
+
+### Finally, $l_{65 + t}$
+
+Use the formula:
+
+$$ _{t}p_{65} = \frac{l_{65+t}}{l_{65}} $$
+
+---
+
+Rearrange:
+
+$$ l_{65+t}  = l_{65} \times _{t}p_{65} $$
+
+---
+
+* We know $l_{65} = 600$
+* We calculated the column $_{t}p_{65}$ 
+
+```{r}
+# Original number of lives
+l_65 = 600
+
+# Calculate number of people alive at time t
+life_table <- life_table %>%
+  mutate(
+    `l_65+t` = l_65 * t_p_65
+  )
+
+# Just round everything to 4 decimal places for pretty printing
+life_table %>%
+  modify(~round(.x, 4))
+```
+
+### One last visualization
+
+```{r, fig.align='center', fig.width=8.5}
+life_table %>%
+  
+  # The code that creates the plot
+  ggplot(aes(x = t, y = `l_65+t`)) + 
+  geom_line() +
+  
+  # Customization
+  labs(x        = "Number of years, t, past age 65",
+       y        = "Number of people alive at t years past 65", 
+       title    = "Visualizing deaths at t years past 65", 
+       subtitle = "Notice this has the same shape as the previous chart") +
+  theme_minimal() +
+  hrbrthemes::scale_color_ipsum()
+```
+
+
+### Without the explanation, how much code?
+
+```{r}
+# Parameters
+initial_age  <- 65
+ending_age   <- 121
+l_x          <- 600      # 60mil / 100thousand
+initial_q    <- 10/1000  # 10 lives out of 1000 at 65
+f_o_m_factor <- 1.1      # from the 10% increase each year
+
+# Age range
+age_range <- initial_age:ending_age
+
+# Initialize table with ages
+life_table <- tibble(ages = age_range)
+
+# Add all the other columns
+life_table <- life_table %>%
+  mutate(
+    
+    # Add the t years
+    t = ages - initial_age,
+    
+    # p using the force of mortality factor
+    `p_x+t` = (1 - initial_q) ^ (f_o_m_factor ^ t),
+    
+    # q is 1-p
+    `q_x+t` = 1 - `p_x+t`,
+    
+    # t_p_x from p
+    `t_p_x` = lag(`p_x+t`, default = 1) %>% cumprod(),
+    
+    # Number of lives left
+    `l_x+t` = l_x * t_p_x
+  )
+
+life_table %>%
+  modify(~round(.x, 4))
+```

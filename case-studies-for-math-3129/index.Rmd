@@ -1,0 +1,7 @@
+Case study 1
+
+* [Instructions](./2017-09-08_life-table/1-instructions.html)
+
+* [Excel Instructions - Word Doc](./2017-09-08_life-table/2-excel-instructions.docx)
+
+* [R Implementation](./2017-09-08_life-table/3-r-implementation.nb.html)
