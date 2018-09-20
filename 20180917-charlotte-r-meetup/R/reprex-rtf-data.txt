@@ -1,0 +1,44 @@
+#+ eval = FALSE
+# A tibble: 9,111 x 5   room_id last_modified       price latitude longitude     <int> <dttm>              <dbl>    <dbl>     <dbl> 1       6 2017-07-11 18:08:36   169     32.8     -117. 2    5570 2017-07-11 20:01:30   205     32.8     -117. 3    9731 2017-07-11 15:51:35    65     32.9     -117. 4   14668 2017-07-11 15:09:38    55     32.9     -117. 5   37149 2017-07-11 15:09:56    55     32.8     -117. 6   38245 2017-07-11 15:18:00    50     32.7     -117. 7   39516 2017-07-11 17:19:11    70     32.7     -117. 8   45429 2017-07-11 18:18:08   160     32.7     -117. 9   54001 2017-07-11 16:31:55   125     32.8     -117.10   62274 2017-07-11 15:49:21    69     32.8     -117.# ... with 9,101 more rows
+
+
+#+ eval = FALSE
+# A tsibble: 8 x 2 [2HOUR]  two_hourly          median_price  <dttm>                     <dbl>1 2017-07-11 14:00:00           552 2017-07-11 16:00:00          1003 2017-07-11 18:00:00          1994 2017-07-11 20:00:00          4505 2017-07-11 22:00:00          1526 2017-07-12 00:00:00          2857 2017-07-12 02:00:00          8828 2017-07-12 04:00:00           40
+
+#+ eval = FALSE
+# Rolling origin forecast resampling # A tibble: 489 x 2   splits       id         <list>       <chr>    1 <S3: rsplit> Slice001 2 <S3: rsplit> Slice002 3 <S3: rsplit> Slice003 4 <S3: rsplit> Slice004 5 <S3: rsplit> Slice005 6 <S3: rsplit> Slice006 7 <S3: rsplit> Slice007 8 <S3: rsplit> Slice008 9 <S3: rsplit> Slice00910 <S3: rsplit> Slice010# … with 479 more rows
+
+#+ eval = FALSE
+# A tibble: 500 x 2   date       adjusted   <date>        <dbl> 1 2013-01-02     28   2 2013-01-03     27.8 3 2013-01-04     28.8
+
+#+ eval = FALSE
+# A tibble: 20 x 2   date       adjusted   <date>        <dbl> 1 2014-12-26     80.8 2 2014-12-29     80.0 3 2014-12-30     79.2
+
+#+ eval = FALSE
+library(purrr)
+library(forecast)
+
+fit_arima <- function(split) {
+  # tibble with date and adjusted cols
+  analysis_set <- analysis(split)
+  Arima(analysis_set$adjusted, order = c(1, 0, 0))
+}
+
+FB_adjusted %>%
+  rolling_origin(
+    initial = 500, 
+    assess = 20, 
+    cumulative = FALSE
+  ) %>%
+  mutate(
+    model = map(splits, ~Arima(analysis(.x)$adjusted))
+  )
+
+#+ eval = FALSE
+# Rolling origin forecast resampling # A tibble: 489 x 3   splits       id       model       * <list>       <chr>    <list>      1 <S3: rsplit> Slice001 <S3: ARIMA> 2 <S3: rsplit> Slice002 <S3: ARIMA> 3 <S3: rsplit> Slice003 <S3: ARIMA> 4 <S3: rsplit> Slice004 <S3: ARIMA> 5 <S3: rsplit> Slice005 <S3: ARIMA> 6 <S3: rsplit> Slice006 <S3: ARIMA> 7 <S3: rsplit> Slice007 <S3: ARIMA> 8 <S3: rsplit> Slice008 <S3: ARIMA> 9 <S3: rsplit> Slice009 <S3: ARIMA>10 <S3: rsplit> Slice010 <S3: ARIMA># … with 479 more rows
+
+#+ eval = FALSE
+tic()
+map(c(2, 2, 2), ~Sys.sleep(.x))
+toc()
+#> 6.08 sec elapsed
