@@ -1,0 +1,516 @@
+---
+title: "Demo"
+author: "Davis Vaughan"
+date: "9/21/2018"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+## Purpose
+
+* Use `tidyquant` to get some stock data. 
+* Use `rsample` to perform cross-validation with time series. 
+* Fit Arima models on those cross-validated data sets with `forecast`
+* Use `yardstick` to calculate and visualize performance metrics
+* Do it faster with `furrr`
+
+```{r, eval=FALSE}
+# Package versions
+
+# install.packages("tidyquant") # 0.5.5
+# install.packages("rsample") # 0.0.2
+# install.packages("purrr") # 0.2.5
+# install.packages("tidyr") # 0.8.1
+
+# devtools::install_github("DavisVaughan/furrr") # 0.1.0.9001
+
+# # dev version focuses on working with tibble output and grouped data
+# devtools::install_github("tidymodels/yardstick", ref = "feature/yardstick-rewrite-for-groups-vecs-and-extensibility")
+
+```
+
+
+## Getting data
+
+```{r tidyquant}
+library(tidyquant)
+```
+
+```{r download}
+bac <- tq_get("BAC", from = "2001-01-01") %>%
+  mutate_if(is.zoo, as.numeric)
+
+bac
+```
+
+```{r bac-cache}
+# write_rds(bac, "data/bac.rds")
+# bac <- read_csv("data/bac.rds")
+```
+
+Let's take a quick look at the adjusted price
+
+```{r}
+rect <- data.frame(
+  min_x   = as.Date("2007-10-01"),
+  max_x   = as.Date("2010-01-01"),
+  min_adj = min(bac$adjusted),
+  max_adj = max(bac$adjusted)
+)
+
+bac %>%
+  ggplot() +
+  
+  # Price
+  geom_line(aes(x = date, y = adjusted)) +
+  
+  # Shaded rect
+  geom_rect(
+    aes(
+      xmin = min_x, 
+      xmax = as.Date("2010-01-01"),
+      ymin = min_adj,
+      ymax = max_adj
+    ),
+    alpha = 0.5,
+    fill = "#1874CD",
+    data = rect
+  ) +
+  
+  # Label
+  geom_label(
+    aes(
+      x = max_x, 
+      y = max_adj - 10, 
+      label = "2008...yay"
+    ), 
+    data = rect
+  ) + 
+  
+  theme_minimal()
+```
+
+
+## Let's look at rsample's cross validation
+
+```{r}
+library(rsample)
+```
+
+Sliding window:
+
+- Start with ~2200 rows (half the data)
+- Assess the next 50 rows
+- Move forward 1 day
+- Drop the previous day
+- Repeat
+
+```{r}
+sliding_splits <- rolling_origin(
+  data       = bac,
+  initial    = nrow(bac) / 2,
+  assess     = 50,
+  cumulative = FALSE
+)
+
+sliding_splits
+```
+
+Look at an individual split
+
+```{r}
+sliding_splits$splits[[1]]
+```
+
+Analysis / Assessment
+
+```{r}
+
+# Training set
+analysis(sliding_splits$splits[[1]])
+
+# Testing set
+assessment(sliding_splits$splits[[1]])
+
+```
+
+Step forward 1 day...
+
+```{r}
+analysis(sliding_splits$splits[[1]])
+
+# drop 2001-01-02, fixed training size
+analysis(sliding_splits$splits[[2]])
+```
+
+Expanding window:
+
+- Start with ~2200 rows (half the data)
+- Assess the next 50 rows
+- Move forward 1 day
+- Keep the previous day!!
+- Repeat
+
+```{r}
+expanding_splits <- rolling_origin(
+  data       = bac,
+  initial    = nrow(bac) / 2,
+  assess     = 50,
+  cumulative = TRUE
+)
+
+expanding_splits
+```
+
+```{r}
+analysis(expanding_splits$splits[[1]])
+
+# kept 2001-01-02, expanding training size
+analysis(expanding_splits$splits[[2]])
+```
+
+Sliding window:
+
+- Start with ~2200 rows (half the data)
+- Assess the next 50 rows
+- Move forward 50 rows!!!
+- Drop the previous 50 rows
+- Repeat
+
+```{r}
+sliding_splits_with_skip <- rolling_origin(
+  data       = bac,
+  initial    = nrow(bac) / 2,
+  assess     = 50,
+  cumulative = FALSE,
+  skip       = 50
+)
+
+sliding_splits_with_skip
+```
+
+Much less data = less intensive modeling
+
+- Could be useful for prototyping
+- Might still want to crossvalidate on the entire 
+  set when you finalize the model
+
+```{r}
+# 2180 samples
+sliding_splits
+
+# 43 samples
+sliding_splits_with_skip
+```
+
+## Fit models with purrr + forecast
+
+Let's use an Arima model, but let `auto.arima()` pick the `p,d,q` specification
+based on the data (aka how much AR / MA / differencing to use).
+
+We are going to use the sliding with skips data for time.
+
+```{r}
+library(purrr)
+library(forecast)
+library(tictoc)
+```
+
+```{r}
+sliding_splits_with_skip
+```
+
+It's generally a good idea to wrap up your modeling step into a single function
+
+```{r}
+fit_auto_arima <- function(split) {
+  
+  # Pull out the training set
+  analysis_set <- analysis(split)
+  
+  # Run auto.arima on the adjusted prices
+  auto.arima(y = analysis_set$adjusted)
+}
+```
+
+Let's try it out on a single split
+
+```{r}
+fit_auto_arima(sliding_splits_with_skip$splits[[1]])
+```
+
+Now let's apply this to every split! 
+We also create a new column, `model`
+~26 seconds
+
+```{r}
+tic()
+
+sliding_fits <- sliding_splits_with_skip %>%
+  mutate(
+    # for each split, fit the auto.arima model...
+    model = map(
+      .x = splits, 
+      .f = fit_auto_arima
+    )
+  )
+
+toc()
+```
+
+Result? 43 arima models fit along our data splits
+
+```{r}
+sliding_fits
+```
+
+## Now what?
+
+### Coefficient stability
+
+```{r}
+library(broom)
+```
+
+Extracting coefficients
+
+```{r}
+# broom::tidy() standardizes your model coefficient results
+sliding_fits$model[[1]]
+tidy(sliding_fits$model[[1]])
+
+fit_coefs <- sliding_fits %>%
+  mutate(coef = map(model, tidy)) %>%
+  unnest(coef)
+
+fit_coefs
+```
+
+Dominant coefs:
+
+```{r}
+count(fit_coefs, term)
+```
+
+It's clear that most models use AR1 and MA1 (probably together). Only a few
+"auto" models ever chose the ar2 and ma2 and above terms. 
+
+Maybe their selection was spurious, and a more parsimonious model would choose just AR1 and MA1?
+
+At the very least, you could go investigate those models that chose more terms, and
+see if they performed better / worse than simpler models.
+
+```{r}
+fit_coefs %>%
+  filter(term %in% c("ar1", "ma1")) %>%
+  ggplot() +
+  geom_point(aes(x = id, y = estimate)) +
+  facet_wrap(~term, ncol = 1) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1)) +
+  labs(
+    subtitle = "Disclaimer: auto.arima chooses a different # of terms for some models,\n so this might not be smart to do")
+```
+
+This is ugly, but you can see where most of the extra terms happen.
+
+```{r}
+fit_coefs %>%
+  ggplot() +
+  geom_point(aes(x = id, y = estimate)) +
+  facet_wrap(~term, ncol = 1) +
+  theme_minimal() +
+  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+```
+
+### Predictions!
+
+We still haven't made use of the `assessment` set yet. Remember this is our
+sets of 50 rows to compare our predictions to.
+
+We can use this to get cross validated performance metrics for our model.
+
+__Again, if you consider "auto arima" the model then this makes sense, but otherwise
+you are aggregating performance of ARIMA(1,1,1) models with ARIMA(2,1,1) and so
+on, so use with caution.__
+
+Extract the assessment set:
+
+```{r}
+sliding_assess <- sliding_fits %>%
+  mutate(assess = map(splits, assessment)) 
+```
+
+Like for the fit, it's nice to have a function that does the forecasting for us.
+
+```{r}
+forecast_arima <- function(model, h = 50) {
+  
+  f_cast <- forecast(object = model, h = h)
+  
+  # extract predictions
+  f_cast %>%
+    as_tibble() %>%
+    select(
+      .pred = `Point Forecast`,
+      .pred_lower = `Lo 80`,
+      .pred_upper = `Hi 80`
+    )
+}
+```
+
+Now we apply that function to every model, forecasting 50 days forward.
+
+```{r}
+sliding_assess_pred <- sliding_assess %>%
+  mutate(
+    .pred = map(model, forecast_arima)
+  )
+
+sliding_assess_pred
+
+sliding_assess_pred$.pred[[1]]
+```
+
+Here's the neat part. We want to be able to compare the assessment and the 
+predictions, right?
+
+```{r}
+library(tidyr)
+```
+
+```{r}
+sliding_unnested <- unnest(sliding_assess_pred, assess, .pred)
+
+sliding_unnested
+```
+
+Let's look at some of those beautiful predictions
+
+```{r}
+ribbon_data <- sliding_unnested %>%
+  select(id, date, .pred_lower, .pred_upper) %>%
+  filter(id %in% c("Slice01", "Slice02", "Slice03"))
+  
+sliding_unnested %>%
+  
+  # tidy our data for ggplot
+  select(id, .pred, date, adjusted) %>%
+  filter(id %in% c("Slice01", "Slice02", "Slice03")) %>%
+  gather("type", "price", -id, -date) %>%
+  
+  ggplot() +
+  
+  # add predicted and realized lines
+  geom_line(aes(x = date, y = price, group = type)) +
+  
+  # add conf band
+  geom_ribbon(
+    mapping = aes(x = date, ymin = .pred_lower, ymax = .pred_upper), 
+    data = ribbon_data,
+    fill = "#6CC7B5",
+    alpha = 0.4
+  ) +
+  
+  # by id
+  facet_wrap(~id, nrow = 1, scales = "free_x")
+```
+
+By the way, we could have done this without all the intermediate variables:
+
+```{r}
+sliding_fits %>%
+  mutate(
+    # # model
+    # model = map(.x = splits, .f = fit_auto_arima),
+    
+    # extract assessment
+    assess = map(splits, assessment),
+    
+    # make predictions
+    .pred = map(model, forecast_arima)
+  ) %>%
+  unnest(assess, .pred)
+```
+
+
+## Cross validated metrics
+
+Okay, so we've got our predictions. How'd we do?
+
+```{r}
+library(yardstick)
+```
+
+Calculate RMSE for each split
+Then average them to get a cross validated RMSE
+You could also get a confidence interval for RMSE
+
+```{r}
+sliding_unnested %>%
+  group_by(id) %>%
+  rmse(adjusted, .pred) %>%
+  summarise(
+    mean_rmse = mean(.estimate),
+    median_rmse = median(.estimate)
+  )
+```
+
+Multiple metrics?
+
+```{r}
+met_set <- metric_set(rmse, mape)
+
+sliding_unnested %>%
+  
+  group_by(id) %>%
+  met_set(adjusted, .pred)  %>%
+  
+  group_by(id) %>%
+  slice(1:5)
+```
+
+## Let's do it again...but faster
+
+```{r}
+tic()
+
+sliding_fits <- sliding_splits_with_skip %>%
+  mutate(
+    # for each split, fit the auto.arima model...
+    model = map(
+      .x = splits, 
+      .f = fit_auto_arima
+    )
+  )
+
+toc()
+```
+
+Now with furrr
+
+```{r}
+library(furrr)
+plan(multiprocess) # multicore on my mac, multisession on windows
+```
+
+I only have 2 physical cores on my machine, so the _max_ speedup i personally
+expect is around 2x (min time of 13 seconds).
+
+Transfer of data can kill your speed (aka passing around large model objects)
+
+```{r}
+tic()
+
+sliding_fits <- sliding_splits_with_skip %>%
+  mutate(
+    # for each split, fit the auto.arima model...
+    model = future_map(
+      .x = splits, 
+      .f = fit_auto_arima
+    )
+  )
+
+toc()
+```
