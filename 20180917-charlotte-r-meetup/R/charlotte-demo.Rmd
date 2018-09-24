@@ -28,6 +28,8 @@ editor_options:
 # # dev version focuses on working with tibble output and grouped data
 # devtools::install_github("tidymodels/yardstick", ref = "feature/yardstick-rewrite-for-groups-vecs-and-extensibility")
 
+# do not use the development version of tibble
+
 ```
 
 
@@ -35,18 +37,19 @@ editor_options:
 
 ```{r tidyquant}
 library(tidyquant)
+library(lubridate)
+library(tsibble)
 ```
 
 ```{r download}
-bac <- tq_get("BAC", from = "2001-01-01") %>%
-  mutate_if(is.zoo, as.numeric)
+bac <- tq_get("BAC", from = "2001-01-01")
 
 bac
 ```
 
 ```{r bac-cache}
 # write_rds(bac, "data/bac.rds")
-# bac <- read_csv("data/bac.rds")
+# bac <- read_rds("data/bac.rds")
 ```
 
 Let's take a quick look at the adjusted price
@@ -91,6 +94,54 @@ bac %>%
   theme_minimal()
 ```
 
+## A few quick tidyquant features
+
+`tq_mutate()` and trading rules:
+
+```{r}
+
+bac %>% tq_mutate(adjusted, EMA)
+
+
+bac_ema_ma <- bac %>%
+  # exponential MA
+  # (pass in extra args to EMA!)
+  tq_mutate(adjusted, EMA, n = 100) %>%
+  # MA
+  mutate(MA = slide_dbl(adjusted, mean, .size = 100))
+
+
+slice(bac_ema_ma, 95:105)
+
+
+bac_ema_ma %>%
+  select(date, EMA, MA) %>%
+  gather(... = -date) %>%
+  ggplot(aes(x = date, y = value, color = key)) +
+  geom_line()
+
+```
+
+`tq_transmute()` can return a variable number of rows.
+
+```{r}
+bac %>%
+  tq_transmute(
+    select = adjusted, 
+    mutate_fun = apply.monthly, 
+    FUN = mean
+  )
+
+bac %>%
+  as_tsibble(index = date) %>%
+  index_by(month = yearmonth(date)) %>%
+  #index_by(month = floor_date(date, "1 month")) %>%
+  summarise(
+    monthly_avg = mean(adjusted),
+    monthly_sd  = sd(adjusted)
+  )
+```
+
 
 ## Let's look at rsample's cross validation
 
@@ -109,7 +160,7 @@ Sliding window:
 ```{r}
 sliding_splits <- rolling_origin(
   data       = bac,
-  initial    = nrow(bac) / 2,
+  initial    = floor(nrow(bac) / 2),
   assess     = 50,
   cumulative = FALSE
 )
@@ -120,7 +171,8 @@ sliding_splits
 Look at an individual split
 
 ```{r}
-sliding_splits$splits[[1]]
+single_split <- sliding_splits$splits[[1]]
+single_split
 ```
 
 Analysis / Assessment
@@ -128,17 +180,17 @@ Analysis / Assessment
 ```{r}
 
 # Training set
-analysis(sliding_splits$splits[[1]])
+analysis(single_split)
 
 # Testing set
-assessment(sliding_splits$splits[[1]])
+assessment(single_split)
 
 ```
 
 Step forward 1 day...
 
 ```{r}
-analysis(sliding_splits$splits[[1]])
+analysis(single_split)
 
 # drop 2001-01-02, fixed training size
 analysis(sliding_splits$splits[[2]])
@@ -155,7 +207,7 @@ Expanding window:
 ```{r}
 expanding_splits <- rolling_origin(
   data       = bac,
-  initial    = nrow(bac) / 2,
+  initial    = floor(nrow(bac) / 2),
   assess     = 50,
   cumulative = TRUE
 )
@@ -181,7 +233,7 @@ Sliding window:
 ```{r}
 sliding_splits_with_skip <- rolling_origin(
   data       = bac,
-  initial    = nrow(bac) / 2,
+  initial    = floor(nrow(bac) / 2),
   assess     = 50,
   cumulative = FALSE,
   skip       = 50

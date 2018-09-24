@@ -1,0 +1,123 @@
+---
+title: "Airbnb data"
+author: "Davis Vaughan"
+date: "1/20/2018"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+http://tomslee.net/airbnb-data-collection-get-the-data
+
+
+```{r}
+# dev version of tsibble 0.5.2.9000
+library(tsibble)
+library(dplyr)
+library(tidyr)
+library(purrr)
+library(ggplot2)
+library(readr)
+library(lubridate)
+library(tibbletime) # for FB data
+```
+
+```{r}
+
+airbnb <- read_csv("data/tomslee_airbnb_san_diego_1436_2017-07-11.csv") %>%
+  select(room_id, last_modified, price, latitude, longitude) %>%
+  mutate(last_modified = floor_date(last_modified, "1 second")) %>%
+  as_tsibble(key = id(room_id), index = last_modified)
+
+airbnb
+```
+
+# A new way to group
+
+Also the "extra functionality"
+
+Showing different variations
+
+```{r}
+
+# First a simple collapse by 2 hour
+index_by(airbnb, daily_dates = floor_date(last_modified, "1 day"))
+
+# What can you do with this?
+airbnb %>%
+  index_by(two_hourly = floor_date(last_modified, "2 hour")) %>%
+  summarise(median_price = median(price))
+
+# Alternatively...
+airbnb %>%
+  index_by(two_hourly = ceiling_date(last_modified, "2 hour")) %>%
+  summarise(median_price = median(price))
+```
+
+```{r}
+# dev versions of both
+library(ggmap) # 2.7.900
+library(gganimate) # 0.9.9.9999
+
+airbnb_plot <- airbnb %>%
+  
+  # Collapse and clean
+  index_by(hourly = floor_date(last_modified, "hour")) %>%
+  
+  # Throw out a few outliers
+  filter(between(price, quantile(price, .05), quantile(price, .95))) %>%
+  
+  # Map and animate
+  qmplot(longitude, latitude, data = ., geom = "blank") +
+  geom_point(aes(color = price, size = price), alpha = .5) +
+  scale_color_continuous(low = "red", high = "blue") +
+  transition_manual(hourly) +
+  labs(title = "{current_frame}")
+
+animate(airbnb_plot, width = 800, height = 800, nframes = 200, fps = 20)
+anim_save("img/anim-san-fran.gif")
+
+```
+
+# sliiide to the left
+
+```{r}
+data(FB)
+
+# Rolling averages
+
+FB_roll <- mutate(FB, 
+  short_mean = slide_dbl(adjusted, ~mean(.x, na.rm = TRUE), .size = 5),
+  long_mean  = slide_dbl(adjusted, ~mean(.x, na.rm = TRUE), .size = 50),
+) 
+
+FB_roll %>%
+  select(date, adjusted, short_mean, long_mean)
+
+FB_roll %>%
+  tidyr::gather(key = "Indicator", value = "value", short_mean, long_mean, adjusted) %>%
+  ggplot(aes(x = date, y = value, color = Indicator)) +
+  geom_line() +
+  labs(x = "Date", y = "Price", title = "FB Adjusted stock price with long/short term moving averages") +
+  theme_minimal()
+  
+# Rolling regressions - more complex and arbitrary functions
+
+FB_model <- FB %>%
+  mutate(
+    lag_volume = lag(volume),
+    model = slide2(
+      .x = lag_volume, adjusted, ~lm(.y ~ .x), .size = 5)
+  ) 
+
+FB_model %>%
+  select(date, adjusted, volume, lag_volume, model)
+
+FB_model %>%
+  filter(!is.na(model)) %>%
+  mutate(glanced = map(model, broom::glance)) %>%
+  select(date, glanced) %>%
+  unnest()
+
+```
+
