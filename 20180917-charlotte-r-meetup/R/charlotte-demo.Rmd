@@ -99,38 +99,6 @@ bac %>%
 
 ## A few quick tidyquant features
 
-`tq_mutate()` and trading rules:
-
-```{r}
-
-# ?EMA
-
-bac %>% 
-  tq_mutate(select = adjusted, mutate_fun = EMA)
-
-# Compare a EMA with a MA
-
-bac_ema_ma <- bac %>%
-  
-  # exponential MA
-  # (pass in extra args to EMA!)
-  tq_mutate(adjusted, EMA, n = 100) %>%
-  
-  # MA
-  mutate(MA = slide_dbl(adjusted, mean, .size = 100))
-
-
-slice(bac_ema_ma, 95:105)
-
-
-bac_ema_ma %>%
-  select(date, EMA, MA) %>%
-  gather(... = -date) %>%
-  ggplot(aes(x = date, y = value, color = key)) +
-  geom_line()
-
-```
-
 `tq_transmute()` can return a variable number of rows, unlike `transmute()`.
 
 ```{r}
@@ -138,7 +106,7 @@ bac %>%
   tq_transmute(
     select = adjusted, 
     mutate_fun = apply.monthly, 
-    FUN = mean
+    FUN = sd
   )
 
 # More flexible workflow
@@ -147,8 +115,8 @@ bac %>%
 
 bac %>%
   as_tsibble(index = date) %>%
-  index_by(month = yearmonth(date)) %>%
-  #index_by(month = floor_date(date, "1 month")) %>%
+  #index_by(month = yearmonth(date)) %>%
+  index_by(month = floor_date(date, "1 month")) %>%
   summarise(
     monthly_avg = mean(adjusted),
     monthly_sd  = sd(adjusted)
@@ -381,12 +349,12 @@ fit_coefs %>%
 This is ugly, but you can see where most of the extra terms happen.
 
 ```{r}
-fit_coefs %>%
-  ggplot() +
-  geom_point(aes(x = id, y = estimate)) +
-  facet_wrap(~term, ncol = 1) +
-  theme_minimal() +
-  theme(axis.text.x = element_text(angle = 45, hjust = 1))
+# fit_coefs %>%
+#   ggplot() +
+#   geom_point(aes(x = id, y = estimate)) +
+#   facet_wrap(~term, ncol = 1) +
+#   theme_minimal() +
+#   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
 ### Predictions!
@@ -482,23 +450,6 @@ sliding_unnested %>%
   facet_wrap(~id, nrow = 1, scales = "free_x")
 ```
 
-By the way, we could have done this without all the intermediate variables:
-
-```{r}
-sliding_fits %>%
-  mutate(
-    # # model
-    # model = map(.x = splits, .f = fit_auto_arima),
-    
-    # extract assessment
-    assess = map(splits, assessment),
-    
-    # make predictions
-    .pred = map(model, forecast_arima)
-  ) %>%
-  unnest(assess, .pred)
-```
-
 
 ## Cross validated metrics
 
@@ -522,37 +473,23 @@ sliding_unnested %>%
   )
 ```
 
-Multiple metrics?
-
-```{r}
-met_set <- metric_set(rmse, mape)
-
-sliding_unnested %>%
-  
-  group_by(id) %>%
-  met_set(adjusted, .pred)  %>%
-  
-  group_by(id) %>%
-  slice(1:5)
-```
-
 ## Let's do it again...but faster
 
 ~26 seconds
 
 ```{r}
-tic()
-
-sliding_fits <- sliding_splits_with_skip %>%
-  mutate(
-    # for each split, fit the auto.arima model...
-    model = map(
-      .x = splits, 
-      .f = fit_auto_arima
-    )
-  )
-
-toc()
+# tic()
+# 
+# sliding_fits <- sliding_splits_with_skip %>%
+#   mutate(
+#     # for each split, fit the auto.arima model...
+#     model = map(
+#       .x = splits, 
+#       .f = fit_auto_arima
+#     )
+#   )
+# 
+# toc()
 ```
 
 Now with furrr
