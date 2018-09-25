@@ -22,8 +22,11 @@ editor_options:
 # install.packages("rsample") # 0.0.2
 # install.packages("purrr") # 0.2.5
 # install.packages("tidyr") # 0.8.1
+# install.packages("tictoc")
 
 # devtools::install_github("DavisVaughan/furrr") # 0.1.0.9001
+
+# devtools::install_github("tidyverts/tsibble") # 0.5.2.9000
 
 # # dev version focuses on working with tibble output and grouped data
 # devtools::install_github("tidymodels/yardstick", ref = "feature/yardstick-rewrite-for-groups-vecs-and-extensibility")
@@ -100,13 +103,19 @@ bac %>%
 
 ```{r}
 
-bac %>% tq_mutate(adjusted, EMA)
+# ?EMA
 
+bac %>% 
+  tq_mutate(select = adjusted, mutate_fun = EMA)
+
+# Compare a EMA with a MA
 
 bac_ema_ma <- bac %>%
+  
   # exponential MA
   # (pass in extra args to EMA!)
   tq_mutate(adjusted, EMA, n = 100) %>%
+  
   # MA
   mutate(MA = slide_dbl(adjusted, mean, .size = 100))
 
@@ -122,7 +131,7 @@ bac_ema_ma %>%
 
 ```
 
-`tq_transmute()` can return a variable number of rows.
+`tq_transmute()` can return a variable number of rows, unlike `transmute()`.
 
 ```{r}
 bac %>%
@@ -131,6 +140,10 @@ bac %>%
     mutate_fun = apply.monthly, 
     FUN = mean
   )
+
+# More flexible workflow
+# index by month and then summarise()
+# you can add as many summary functions as you want!
 
 bac %>%
   as_tsibble(index = date) %>%
@@ -525,6 +538,8 @@ sliding_unnested %>%
 
 ## Let's do it again...but faster
 
+~26 seconds
+
 ```{r}
 tic()
 
@@ -551,6 +566,8 @@ I only have 2 physical cores on my machine, so the _max_ speedup i personally
 expect is around 2x (min time of 13 seconds).
 
 Transfer of data can kill your speed (aka passing around large model objects)
+
+(If you run this on rstudio cloud, you will likely run out of memory)
 
 ```{r}
 tic()
