@@ -28,7 +28,7 @@ editor_options:
 # # dev version focuses on working with tibble output and grouped data
 # devtools::install_github("tidymodels/yardstick", ref = "feature/yardstick-rewrite-for-groups-vecs-and-extensibility")
 
-# do not use the development version of tibble
+# do not use the development version of tibble or rlang
 
 ```
 
